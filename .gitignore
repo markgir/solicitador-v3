@@ -1,3 +1,5 @@
 database/solicitor.db
 logs/email.log
 config.php
+uploads/*
+!uploads/.gitkeep

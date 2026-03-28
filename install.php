@@ -6,6 +6,10 @@ $db = get_db();
 $db->exec("DROP TABLE IF EXISTS appointments");
 $db->exec("DROP TABLE IF EXISTS services");
 $db->exec("DROP TABLE IF EXISTS admin_users");
+$db->exec("DROP TABLE IF EXISTS banners");
+$db->exec("DROP TABLE IF EXISTS site_settings");
+$db->exec("DROP TABLE IF EXISTS menu_items");
+$db->exec("DROP TABLE IF EXISTS blog_posts");
 
 $db->exec("CREATE TABLE services (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,6 +46,48 @@ $db->exec("CREATE TABLE admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE banners (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_pt VARCHAR(255) DEFAULT '',
+    title_fr VARCHAR(255) DEFAULT '',
+    image_url VARCHAR(500) NOT NULL,
+    link VARCHAR(500) DEFAULT '',
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE site_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) UNIQUE NOT NULL,
+    setting_value TEXT DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE menu_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_pt VARCHAR(255) NOT NULL,
+    title_fr VARCHAR(255) NOT NULL,
+    url VARCHAR(500) NOT NULL,
+    target VARCHAR(10) DEFAULT '_self',
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE blog_posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    title_pt VARCHAR(255) NOT NULL,
+    title_fr VARCHAR(255) NOT NULL,
+    excerpt_pt TEXT DEFAULT '',
+    excerpt_fr TEXT DEFAULT '',
+    content_pt TEXT NOT NULL,
+    content_fr TEXT NOT NULL,
+    image_url VARCHAR(500) DEFAULT '',
+    published TINYINT(1) DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 $services = [
@@ -119,11 +165,29 @@ foreach ($services as $s) {
 $passwordHash = password_hash('admin123', PASSWORD_DEFAULT);
 $db->prepare("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)")->execute(['admin', $passwordHash]);
 
+// Seed default site settings
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('site_logo', ''), ('parallax_image', '')");
+
+// Seed default menu items
+$menuStmt = $db->prepare("INSERT INTO menu_items (title_pt, title_fr, url, target, active, sort_order) VALUES (?, ?, ?, '_self', 1, ?)");
+$menuStmt->execute(['Início', 'Accueil', '/index.php', 1]);
+$menuStmt->execute(['Serviços', 'Services', '/index.php#services', 2]);
+$menuStmt->execute(['Blog', 'Blog', '/blog.php', 3]);
+$menuStmt->execute(['Consulta', 'Consultation', '/booking.php', 4]);
+$menuStmt->execute(['Contacto', 'Contact', '/index.php#contact', 5]);
+
+// Create uploads directory
+$uploadsDir = __DIR__ . '/uploads';
+if (!is_dir($uploadsDir)) {
+    mkdir($uploadsDir, 0755, true);
+}
+
 echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Install</title><style>body{font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 24px;background:#f9f8f6;color:#333;}h1{color:#1e3a5f;}a{color:#1e3a5f;}.warn{background:#fff3cd;border:1px solid #ffc107;padding:12px 16px;border-radius:4px;margin-top:1rem;}</style></head><body>';
 echo '<h1>&#x2705; Installation Complete</h1>';
 echo '<ul>';
-echo '<li>MySQL database tables created</li>';
+echo '<li>MySQL database tables created (services, appointments, admin_users, banners, site_settings, menu_items, blog_posts)</li>';
 echo '<li>8 services inserted (PT + FR)</li>';
+echo '<li>Default menu items created</li>';
 echo '<li>Admin user created: <strong>admin</strong> / <strong>admin123</strong></li>';
 echo '</ul>';
 echo '<p><a href="/admin/login.php">&#x1F512; Go to Admin Panel</a> &nbsp;|&nbsp; <a href="/index.php">&#x1F3E0; Go to Site</a></p>';

@@ -86,4 +86,12 @@ return [
         'completed' => 'Terminé',
         'cancelled' => 'Annulé',
     ],
+    'blog' => [
+        'title' => 'Blog',
+        'read_more' => 'Lire la suite',
+        'no_posts' => 'Aucun article publié pour le moment.',
+        'latest_news' => 'Dernières Nouvelles',
+        'back' => 'Retour au Blog',
+        'published_on' => 'Publié le',
+    ],
 ];

@@ -12,9 +12,54 @@ $db = get_db();
 $stmt = $db->query("SELECT * FROM services WHERE active = 1 ORDER BY sort_order ASC");
 $services = $stmt->fetchAll();
 
+// Fetch active banners
+$bannerStmt = $db->query("SELECT * FROM banners WHERE active = 1 ORDER BY sort_order ASC");
+$banners = $bannerStmt->fetchAll();
+
+// Fetch parallax image
+$parallaxImage = get_setting($db, 'parallax_image');
+$siteLogo = get_setting($db, 'site_logo');
+
+// Fetch latest 4 published blog posts
+$blogStmt = $db->query("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT 4");
+$latestPosts = $blogStmt->fetchAll();
+
 $pageTitle = lang('home.hero_title') . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';
 ?>
+
+<?php if (!empty($banners)): ?>
+<section class="banner-section">
+    <div class="banner-slider" id="bannerSlider">
+        <?php foreach ($banners as $i => $banner):
+            $bannerTitle = $lang === 'fr' ? $banner['title_fr'] : $banner['title_pt'];
+        ?>
+        <div class="banner-slide <?= $i === 0 ? 'active' : '' ?>">
+            <img src="<?= sanitize($banner['image_url']) ?>" alt="<?= sanitize($bannerTitle) ?>">
+            <?php if ($bannerTitle): ?>
+            <div class="banner-overlay">
+                <div class="container">
+                    <h2><?= sanitize($bannerTitle) ?></h2>
+                </div>
+            </div>
+            <?php endif; ?>
+            <?php if ($banner['link']): ?>
+            <a href="<?= sanitize($banner['link']) ?>" class="banner-link-overlay"></a>
+            <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+        <?php if (count($banners) > 1): ?>
+        <button class="banner-nav banner-prev" id="bannerPrev" aria-label="Previous">&#10094;</button>
+        <button class="banner-nav banner-next" id="bannerNext" aria-label="Next">&#10095;</button>
+        <div class="banner-dots" id="bannerDots">
+            <?php foreach ($banners as $i => $b): ?>
+            <span class="banner-dot <?= $i === 0 ? 'active' : '' ?>" data-index="<?= $i ?>"></span>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</section>
+<?php endif; ?>
 
 <section class="hero">
     <div class="container">
@@ -45,5 +90,53 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
+
+<?php if ($parallaxImage): ?>
+<section class="parallax-section" style="background-image: url('<?= sanitize($parallaxImage) ?>');">
+    <div class="parallax-overlay">
+        <div class="container parallax-content">
+            <?php if ($siteLogo): ?>
+                <img src="<?= sanitize($siteLogo) ?>" alt="Solicitador" class="parallax-logo">
+            <?php else: ?>
+                <h2 class="parallax-title">Solicitador</h2>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<?php if (!empty($latestPosts)): ?>
+<section class="blog-preview-section">
+    <div class="container">
+        <h2 class="section-title"><?= lang('blog.latest_news') ?></h2>
+        <div class="blog-preview-grid">
+            <?php foreach ($latestPosts as $post):
+                $postTitle = $lang === 'fr' ? $post['title_fr'] : $post['title_pt'];
+                $postExcerpt = $lang === 'fr' ? $post['excerpt_fr'] : $post['excerpt_pt'];
+                if (empty($postExcerpt)) {
+                    $content = $lang === 'fr' ? $post['content_fr'] : $post['content_pt'];
+                    $postExcerpt = mb_substr(strip_tags($content), 0, 150) . '...';
+                }
+            ?>
+            <div class="blog-preview-card">
+                <?php if ($post['image_url']): ?>
+                <div class="blog-preview-image">
+                    <a href="/blog-post.php?slug=<?= sanitize($post['slug']) ?>">
+                        <img src="<?= sanitize($post['image_url']) ?>" alt="<?= sanitize($postTitle) ?>">
+                    </a>
+                </div>
+                <?php endif; ?>
+                <div class="blog-preview-content">
+                    <h3><a href="/blog-post.php?slug=<?= sanitize($post['slug']) ?>"><?= sanitize($postTitle) ?></a></h3>
+                    <p class="blog-preview-date"><?= format_date($post['created_at'], $lang) ?></p>
+                    <p class="blog-preview-excerpt"><?= sanitize($postExcerpt) ?></p>
+                    <a href="/blog-post.php?slug=<?= sanitize($post['slug']) ?>" class="btn btn-outline btn-sm"><?= lang('blog.read_more') ?> &rarr;</a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

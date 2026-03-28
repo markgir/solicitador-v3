@@ -8,9 +8,9 @@ $db = get_db();
 $totalAppointments     = $db->query("SELECT COUNT(*) FROM appointments")->fetchColumn();
 $pendingAppointments   = $db->query("SELECT COUNT(*) FROM appointments WHERE status = 'pending'")->fetchColumn();
 $confirmedAppointments = $db->query("SELECT COUNT(*) FROM appointments WHERE status = 'confirmed'")->fetchColumn();
-$paidAppointments      = $db->query("SELECT COUNT(*) FROM appointments WHERE paid = 1")->fetchColumn();
+$paidAppointments      = $db->query("SELECT COUNT(*) FROM appointments WHERE payment_status = 'paid'")->fetchColumn();
 
-$recentStmt = $db->query("SELECT a.*, s.name_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id ORDER BY a.created_at DESC LIMIT 10");
+$recentStmt = $db->query("SELECT a.*, s.title_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id ORDER BY a.created_at DESC LIMIT 10");
 $recentAppointments = $recentStmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -84,7 +84,7 @@ $recentAppointments = $recentStmt->fetchAll();
                             <td><?= sanitize($apt['service_name'] ?? '-') ?></td>
                             <td><?= sanitize($apt['preferred_date']) ?></td>
                             <td><span class="badge badge-<?= sanitize($apt['status']) ?>"><?= sanitize(get_status_label($apt['status'], 'pt')) ?></span></td>
-                            <td><?= $apt['paid'] ? '&#x2705;' : '&#x274C;' ?></td>
+                            <td><?= ($apt['payment_status'] ?? '') === 'paid' ? '&#x2705;' : '&#x274C;' ?></td>
                             <td><a href="/admin/appointment-detail.php?id=<?= (int)$apt['id'] ?>" class="btn btn-sm">Ver</a></td>
                         </tr>
                         <?php endforeach; ?>

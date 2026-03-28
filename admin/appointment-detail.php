@@ -8,7 +8,7 @@ $id = (int)($_GET['id'] ?? 0);
 
 if (!$id) redirect('/admin/appointments.php');
 
-$fetchStmt = $db->prepare("SELECT a.*, s.name_pt as service_name_pt, s.name_fr as service_name_fr, s.slug as service_slug FROM appointments a LEFT JOIN services s ON a.service_id = s.id WHERE a.id = ?");
+$fetchStmt = $db->prepare("SELECT a.*, s.title_pt as service_name_pt, s.title_fr as service_name_fr, s.slug as service_slug FROM appointments a LEFT JOIN services s ON a.service_id = s.id WHERE a.id = ?");
 $fetchStmt->execute([$id]);
 $apt = $fetchStmt->fetch();
 
@@ -26,16 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'update_status') {
             $newStatus = $_POST['status'] ?? '';
             if (in_array($newStatus, ['pending','confirmed','completed','cancelled'])) {
-                $db->prepare("UPDATE appointments SET status = ?, updated_at = datetime('now') WHERE id = ?")->execute([$newStatus, $id]);
+                $db->prepare("UPDATE appointments SET status = ? WHERE id = ?")->execute([$newStatus, $id]);
                 $success = 'Estado atualizado.';
             }
-        } elseif ($action === 'update_paid') {
-            $paid = (int)($_POST['paid'] ?? 0);
-            $db->prepare("UPDATE appointments SET paid = ?, updated_at = datetime('now') WHERE id = ?")->execute([$paid ? 1 : 0, $id]);
+        } elseif ($action === 'update_payment_status') {
+            $paymentStatus = in_array($_POST['payment_status'] ?? '', ['paid','unpaid']) ? $_POST['payment_status'] : 'unpaid';
+            $db->prepare("UPDATE appointments SET payment_status = ? WHERE id = ?")->execute([$paymentStatus, $id]);
             $success = 'Pagamento atualizado.';
         } elseif ($action === 'update_notes') {
-            $notes = trim($_POST['admin_notes'] ?? '');
-            $db->prepare("UPDATE appointments SET admin_notes = ?, updated_at = datetime('now') WHERE id = ?")->execute([$notes, $id]);
+            $notes = trim($_POST['consultation_notes'] ?? '');
+            $db->prepare("UPDATE appointments SET consultation_notes = ? WHERE id = ?")->execute([$notes, $id]);
             $success = 'Notas atualizadas.';
         }
 
@@ -114,12 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="POST" style="margin-bottom:1.5rem;">
                     <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
-                    <input type="hidden" name="action" value="update_paid">
+                    <input type="hidden" name="action" value="update_payment_status">
                     <div class="form-group">
                         <label>Pagamento</label>
-                        <select name="paid">
-                            <option value="0" <?= !$apt['paid'] ? 'selected' : '' ?>>Por Pagar</option>
-                            <option value="1" <?= $apt['paid']  ? 'selected' : '' ?>>Pago</option>
+                        <select name="payment_status">
+                            <option value="unpaid" <?= ($apt['payment_status'] ?? 'unpaid') === 'unpaid' ? 'selected' : '' ?>>Por Pagar</option>
+                            <option value="paid"   <?= ($apt['payment_status'] ?? '') === 'paid'   ? 'selected' : '' ?>>Pago</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Atualizar Pagamento</button>
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="action" value="update_notes">
                     <div class="form-group">
                         <label>Notas Internas</label>
-                        <textarea name="admin_notes" rows="4"><?= sanitize($apt['admin_notes'] ?? '') ?></textarea>
+                        <textarea name="consultation_notes" rows="4"><?= sanitize($apt['consultation_notes'] ?? '') ?></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar Notas</button>
                 </form>

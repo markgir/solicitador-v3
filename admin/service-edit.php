@@ -18,10 +18,10 @@ if ($id) {
 $errors   = [];
 $formData = [
     'slug'       => $service['slug']       ?? '',
-    'name_pt'    => $service['name_pt']    ?? '',
-    'name_fr'    => $service['name_fr']    ?? '',
-    'desc_pt'    => $service['desc_pt']    ?? '',
-    'desc_fr'    => $service['desc_fr']    ?? '',
+    'title_pt'    => $service['title_pt']    ?? '',
+    'title_fr'    => $service['title_fr']    ?? '',
+    'description_pt' => $service['description_pt']    ?? '',
+    'description_fr' => $service['description_fr']    ?? '',
     'sort_order' => $service['sort_order'] ?? 0,
     'active'     => $service['active']     ?? 1,
 ];
@@ -31,32 +31,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Token inválido.';
     } else {
         $rawSlug = strtolower(trim($_POST['slug'] ?? ''));
-        $formData['slug']       = preg_replace('/[^a-z0-9-]/', '-', $rawSlug);
-        $formData['name_pt']    = trim($_POST['name_pt']    ?? '');
-        $formData['name_fr']    = trim($_POST['name_fr']    ?? '');
-        $formData['desc_pt']    = trim($_POST['desc_pt']    ?? '');
-        $formData['desc_fr']    = trim($_POST['desc_fr']    ?? '');
+        $formData['slug']            = preg_replace('/[^a-z0-9-]/', '-', $rawSlug);
+        $formData['title_pt']        = trim($_POST['title_pt']        ?? '');
+        $formData['title_fr']        = trim($_POST['title_fr']        ?? '');
+        $formData['description_pt']  = trim($_POST['description_pt']  ?? '');
+        $formData['description_fr']  = trim($_POST['description_fr']  ?? '');
         $formData['sort_order'] = (int)($_POST['sort_order'] ?? 0);
         $formData['active']     = isset($_POST['active']) ? 1 : 0;
 
-        if (empty($formData['slug']))   $errors[] = 'Slug é obrigatório.';
-        if (empty($formData['name_pt'])) $errors[] = 'Nome PT é obrigatório.';
-        if (empty($formData['name_fr'])) $errors[] = 'Nome FR é obrigatório.';
-        if (empty($formData['desc_pt'])) $errors[] = 'Descrição PT é obrigatória.';
-        if (empty($formData['desc_fr'])) $errors[] = 'Descrição FR é obrigatória.';
+        if (empty($formData['slug']))            $errors[] = 'Slug é obrigatório.';
+        if (empty($formData['title_pt']))        $errors[] = 'Nome PT é obrigatório.';
+        if (empty($formData['title_fr']))        $errors[] = 'Nome FR é obrigatório.';
+        if (empty($formData['description_pt'])) $errors[] = 'Descrição PT é obrigatória.';
+        if (empty($formData['description_fr'])) $errors[] = 'Descrição FR é obrigatória.';
 
         if (empty($errors)) {
             try {
                 if ($isEdit) {
-                    $db->prepare("UPDATE services SET slug=?, name_pt=?, name_fr=?, desc_pt=?, desc_fr=?, sort_order=?, active=? WHERE id=?")->execute([
-                        $formData['slug'], $formData['name_pt'], $formData['name_fr'],
-                        $formData['desc_pt'], $formData['desc_fr'],
+                    $db->prepare("UPDATE services SET slug=?, title_pt=?, title_fr=?, description_pt=?, description_fr=?, sort_order=?, active=? WHERE id=?")->execute([
+                        $formData['slug'], $formData['title_pt'], $formData['title_fr'],
+                        $formData['description_pt'], $formData['description_fr'],
                         $formData['sort_order'], $formData['active'], $id
                     ]);
                 } else {
-                    $db->prepare("INSERT INTO services (slug, name_pt, name_fr, desc_pt, desc_fr, sort_order, active) VALUES (?,?,?,?,?,?,?)")->execute([
-                        $formData['slug'], $formData['name_pt'], $formData['name_fr'],
-                        $formData['desc_pt'], $formData['desc_fr'],
+                    $db->prepare("INSERT INTO services (slug, title_pt, title_fr, description_pt, description_fr, image_url, sort_order, active) VALUES (?,?,?,?,?,'',?,?)")->execute([
+                        $formData['slug'], $formData['title_pt'], $formData['title_fr'],
+                        $formData['description_pt'], $formData['description_fr'],
                         $formData['sort_order'], $formData['active']
                     ]);
                 }
@@ -119,20 +119,20 @@ $pageAction = $isEdit ? 'Editar Serviço' : 'Novo Serviço';
                         <input type="number" id="sort_order" name="sort_order" value="<?= (int)$formData['sort_order'] ?>" min="0">
                     </div>
                     <div class="form-group">
-                        <label for="name_pt">Nome (PT) *</label>
-                        <input type="text" id="name_pt" name="name_pt" value="<?= sanitize($formData['name_pt']) ?>" required>
+                        <label for="title_pt">Título (PT) *</label>
+                        <input type="text" id="title_pt" name="title_pt" value="<?= sanitize($formData['title_pt']) ?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="name_fr">Nome (FR) *</label>
-                        <input type="text" id="name_fr" name="name_fr" value="<?= sanitize($formData['name_fr']) ?>" required>
+                        <label for="title_fr">Título (FR) *</label>
+                        <input type="text" id="title_fr" name="title_fr" value="<?= sanitize($formData['title_fr']) ?>" required>
                     </div>
                     <div class="form-group form-full">
-                        <label for="desc_pt">Descrição (PT) *</label>
-                        <textarea id="desc_pt" name="desc_pt" rows="6" required><?= sanitize($formData['desc_pt']) ?></textarea>
+                        <label for="description_pt">Descrição (PT) *</label>
+                        <textarea id="description_pt" name="description_pt" rows="6" required><?= sanitize($formData['description_pt']) ?></textarea>
                     </div>
                     <div class="form-group form-full">
-                        <label for="desc_fr">Descrição (FR) *</label>
-                        <textarea id="desc_fr" name="desc_fr" rows="6" required><?= sanitize($formData['desc_fr']) ?></textarea>
+                        <label for="description_fr">Descrição (FR) *</label>
+                        <textarea id="description_fr" name="description_fr" rows="6" required><?= sanitize($formData['description_fr']) ?></textarea>
                     </div>
                     <div class="form-group form-full">
                         <label>

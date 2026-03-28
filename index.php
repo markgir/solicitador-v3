@@ -29,8 +29,8 @@ require_once __DIR__ . '/includes/header.php';
         <h2 class="section-title"><?= lang('home.services_title') ?></h2>
         <div class="services-grid">
             <?php foreach ($services as $service):
-                $name = $lang === 'fr' ? $service['name_fr'] : $service['name_pt'];
-                $desc = $lang === 'fr' ? $service['desc_fr'] : $service['desc_pt'];
+                $name = $lang === 'fr' ? $service['title_fr'] : $service['title_pt'];
+                $desc = $lang === 'fr' ? $service['description_fr'] : $service['description_pt'];
                 $excerpt = mb_substr(strip_tags($desc), 0, 80) . '...';
                 $verMais = $lang === 'fr' ? 'Voir plus' : 'Ver mais';
             ?>

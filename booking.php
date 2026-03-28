@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $ref = generate_payment_reference();
                 try {
-                    $insert = $db->prepare("INSERT INTO appointments (name, email, phone, nif, address, service_id, preferred_date, preferred_time, notes, payment_reference, status, paid, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 0, datetime('now'))");
+                    $insert = $db->prepare("INSERT INTO appointments (name, email, phone, nif, address, service_id, preferred_date, preferred_time, notes, payment_reference, status, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid', datetime('now'))");
                     $insert->execute([
                         $formData['name'],
                         $formData['email'],
@@ -159,7 +159,7 @@ require_once __DIR__ . '/includes/header.php';
                     <select id="service_slug" name="service_slug" required>
                         <option value=""><?= lang('booking.select_service') ?></option>
                         <?php foreach ($services as $svc):
-                            $svcName = $lang === 'fr' ? $svc['name_fr'] : $svc['name_pt'];
+                            $svcName = $lang === 'fr' ? $svc['title_fr'] : $svc['title_pt'];
                             $selected = $formData['service_slug'] === $svc['slug'] ? 'selected' : '';
                         ?>
                         <option value="<?= sanitize($svc['slug']) ?>" <?= $selected ?>><?= sanitize($svcName) ?></option>

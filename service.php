@@ -28,8 +28,8 @@ if (!$service) {
     exit;
 }
 
-$name = $lang === 'fr' ? $service['name_fr'] : $service['name_pt'];
-$desc = $lang === 'fr' ? $service['desc_fr'] : $service['desc_pt'];
+$name = $lang === 'fr' ? $service['title_fr'] : $service['title_pt'];
+$desc = $lang === 'fr' ? $service['description_fr'] : $service['description_pt'];
 
 $pageTitle = sanitize($name) . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';

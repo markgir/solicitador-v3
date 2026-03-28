@@ -18,10 +18,10 @@ if (in_array($statusFilter, ['pending','confirmed','completed','cancelled'])) {
     $where[]  = "a.status = ?";
     $params[] = $statusFilter;
 }
-if ($paidFilter === '1') {
-    $where[] = "a.paid = 1";
-} elseif ($paidFilter === '0') {
-    $where[] = "a.paid = 0";
+if ($paidFilter === 'paid') {
+    $where[] = "a.payment_status = 'paid'";
+} elseif ($paidFilter === 'unpaid') {
+    $where[] = "a.payment_status = 'unpaid'";
 }
 
 $whereSQL = $where ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -31,7 +31,7 @@ $countStmt->execute($params);
 $total      = (int)$countStmt->fetchColumn();
 $totalPages = (int)ceil($total / $perPage);
 
-$stmt = $db->prepare("SELECT a.*, s.name_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id $whereSQL ORDER BY a.created_at DESC LIMIT $perPage OFFSET $offset");
+$stmt = $db->prepare("SELECT a.*, s.title_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id $whereSQL ORDER BY a.created_at DESC LIMIT $perPage OFFSET $offset");
 $stmt->execute($params);
 $appointments = $stmt->fetchAll();
 ?>
@@ -75,8 +75,8 @@ $appointments = $stmt->fetchAll();
                 </select>
                 <select name="paid">
                     <option value="">Todos os Pagamentos</option>
-                    <option value="1" <?= $paidFilter === '1' ? 'selected' : '' ?>>Pago</option>
-                    <option value="0" <?= $paidFilter === '0' ? 'selected' : '' ?>>Por Pagar</option>
+                    <option value="paid"   <?= $paidFilter === 'paid'   ? 'selected' : '' ?>>Pago</option>
+                    <option value="unpaid" <?= $paidFilter === 'unpaid' ? 'selected' : '' ?>>Por Pagar</option>
                 </select>
                 <button type="submit" class="btn btn-primary">Filtrar</button>
                 <a href="/admin/appointments.php" class="btn btn-outline">Limpar</a>
@@ -110,7 +110,7 @@ $appointments = $stmt->fetchAll();
                             <td><?= sanitize($apt['service_name'] ?? '-') ?></td>
                             <td><?= sanitize($apt['preferred_date']) ?> <?= sanitize($apt['preferred_time']) ?></td>
                             <td><span class="badge badge-<?= sanitize($apt['status']) ?>"><?= sanitize(get_status_label($apt['status'], 'pt')) ?></span></td>
-                            <td><?= $apt['paid'] ? '<span class="badge badge-paid">Pago</span>' : '<span class="badge badge-unpaid">Por Pagar</span>' ?></td>
+                            <td><?= $apt['payment_status'] === 'paid' ? '<span class="badge badge-paid">Pago</span>' : '<span class="badge badge-unpaid">Por Pagar</span>' ?></td>
                             <td><code><?= sanitize($apt['payment_reference']) ?></code></td>
                             <td><?= sanitize(substr($apt['created_at'], 0, 10)) ?></td>
                             <td><a href="/admin/appointment-detail.php?id=<?= (int)$apt['id'] ?>" class="btn btn-sm">Ver</a></td>

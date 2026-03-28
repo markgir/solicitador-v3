@@ -19,11 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = lang('admin.login_error');
         } else {
             $db = get_db();
-            $stmt = $db->prepare("SELECT * FROM admins WHERE username = ?");
+            $stmt = $db->prepare("SELECT * FROM admin_users WHERE username = ?");
             $stmt->execute([$username]);
             $admin = $stmt->fetch();
 
-            if ($admin && password_verify($password, $admin['password'])) {
+            if ($admin && password_verify($password, $admin['password_hash'])) {
                 session_regenerate_id(true);
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['admin_username']  = $admin['username'];

@@ -73,8 +73,8 @@ $services = $db->query("SELECT * FROM services ORDER BY sort_order ASC")->fetchA
                         <tr>
                             <td><?= (int)$svc['id'] ?></td>
                             <td><?= (int)$svc['sort_order'] ?></td>
-                            <td><?= sanitize($svc['name_pt']) ?></td>
-                            <td><?= sanitize($svc['name_fr']) ?></td>
+                            <td><?= sanitize($svc['title_pt']) ?></td>
+                            <td><?= sanitize($svc['title_fr']) ?></td>
                             <td><code><?= sanitize($svc['slug']) ?></code></td>
                             <td>
                                 <form method="POST" style="display:inline;">

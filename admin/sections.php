@@ -57,7 +57,7 @@ try {
         </header>
 
         <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.95rem;">
-            Gerencie a ordem e visibilidade das secções na página principal. Altere a ordem numérica e clique em "Guardar Ordem". Ative ou desative cada secção para controlar o que aparece no site.
+            Gerencie a ordem e visibilidade das secções na página principal. Altere a ordem numérica e clique em &quot;Guardar Ordem&quot;. Ative ou desative cada secção para controlar o que aparece no site.
         </p>
 
         <?php if ($success): ?>
@@ -65,54 +65,67 @@ try {
         <?php endif; ?>
 
         <div class="admin-card">
-            <form method="POST">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Secção</th>
+                            <th style="width:100px;">Ordem</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($sections as $section): ?>
+                        <tr>
+                            <td>
+                                <strong><?= sanitize($section['label_pt']) ?></strong>
+                                <br><small style="color:var(--text-muted);"><?= sanitize($section['section_key']) ?></small>
+                            </td>
+                            <td>
+                                <input type="number" class="section-order-input" data-id="<?= (int)$section['id'] ?>" value="<?= (int)$section['sort_order'] ?>" min="0" style="width:70px;">
+                            </td>
+                            <td>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                                    <input type="hidden" name="action" value="toggle_active">
+                                    <input type="hidden" name="section_id" value="<?= (int)$section['id'] ?>">
+                                    <button type="submit" class="btn btn-sm <?= $section['active'] ? 'btn-success' : 'btn-muted' ?>">
+                                        <?= $section['active'] ? 'Ativo' : 'Inativo' ?>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($sections)): ?>
+                        <tr><td colspan="3" class="text-center">Sem secções configuradas.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <?php if (!empty($sections)): ?>
+            <form method="POST" id="orderForm" style="margin-top:1rem;">
                 <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
                 <input type="hidden" name="action" value="save_order">
-
-                <div class="table-responsive">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Secção</th>
-                                <th style="width:100px;">Ordem</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($sections as $section): ?>
-                            <tr>
-                                <td>
-                                    <strong><?= sanitize($section['label_pt']) ?></strong>
-                                    <br><small style="color:var(--text-muted);"><?= sanitize($section['section_key']) ?></small>
-                                </td>
-                                <td>
-                                    <input type="number" name="sort_order[<?= (int)$section['id'] ?>]" value="<?= (int)$section['sort_order'] ?>" min="0" style="width:70px;">
-                                </td>
-                                <td>
-                                    <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
-                                        <input type="hidden" name="action" value="toggle_active">
-                                        <input type="hidden" name="section_id" value="<?= (int)$section['id'] ?>">
-                                        <button type="submit" class="btn btn-sm <?= $section['active'] ? 'btn-success' : 'btn-muted' ?>">
-                                            <?= $section['active'] ? 'Ativo' : 'Inativo' ?>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                            <?php if (empty($sections)): ?>
-                            <tr><td colspan="3" class="text-center">Sem secções configuradas.</td></tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <?php if (!empty($sections)): ?>
-                <div class="form-actions" style="margin-top:1rem;">
+                <div id="orderFields"></div>
+                <div class="form-actions">
                     <button type="submit" class="btn btn-gold">Guardar Ordem</button>
                 </div>
-                <?php endif; ?>
             </form>
+            <script>
+            document.getElementById('orderForm').addEventListener('submit', function() {
+                var container = document.getElementById('orderFields');
+                container.innerHTML = '';
+                document.querySelectorAll('.section-order-input').forEach(function(input) {
+                    var hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'sort_order[' + input.dataset.id + ']';
+                    hidden.value = input.value;
+                    container.appendChild(hidden);
+                });
+            });
+            </script>
+            <?php endif; ?>
         </div>
     </main>
 </div>

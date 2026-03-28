@@ -228,6 +228,9 @@ function upload_document(array $file, string $subdir = 'documents'): ?array {
         default      => 'bin',
     };
 
+    // Sanitize subdir to prevent directory traversal
+    $subdir = preg_replace('/[^a-zA-Z0-9_-]/', '', $subdir);
+
     $uploadsDir = __DIR__ . '/../uploads';
     if ($subdir) {
         $uploadsDir .= '/' . $subdir;

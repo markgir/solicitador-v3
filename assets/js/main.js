@@ -61,7 +61,7 @@
       var selected = new Date(this.value + 'T00:00:00');
       var dow = selected.getDay(); // 0=Sun, 6=Sat
       if (dow === 0 || dow === 6) {
-        this.setCustomValidity('Por favor seleccione um dia útil (segunda a sexta-feira).');
+        this.setCustomValidity('Por favor selecione um dia útil (segunda a sexta-feira).');
         this.reportValidity();
         this.value = '';
       } else {
@@ -141,7 +141,7 @@
           } else {
             var dow = selected.getDay();
             if (dow === 0 || dow === 6) {
-              showError(dateField, 'Por favor seleccione um dia útil.');
+              showError(dateField, 'Por favor selecione um dia útil.');
             }
           }
         }

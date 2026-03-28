@@ -61,7 +61,7 @@
       var selected = new Date(this.value + 'T00:00:00');
       var dow = selected.getDay(); // 0=Sun, 6=Sat
       if (dow === 0 || dow === 6) {
-        var msg = (window.i18n && window.i18n.weekendDate) ? window.i18n.weekendDate : 'Por favor selecione um dia útil (segunda a sexta-feira).';
+        var msg = (window.i18n && window.i18n.weekendDate) ? window.i18n.weekendDate : '';
         this.setCustomValidity(msg);
         this.reportValidity();
         this.value = '';
@@ -77,11 +77,11 @@
     bookingForm.addEventListener('submit', function (e) {
       var valid = true;
       var t = window.i18n || {};
-      var msgRequired    = t.required     || 'Este campo é obrigatório.';
-      var msgEmail       = t.invalidEmail || 'Endereço de email inválido.';
-      var msgNif         = t.invalidNif   || 'NIF inválido (deve ter 9 dígitos).';
-      var msgPastDate    = t.pastDate     || 'A data deve ser no futuro.';
-      var msgWeekend     = t.weekendDate  || 'Por favor selecione um dia útil.';
+      var msgRequired    = t.required     || '';
+      var msgEmail       = t.invalidEmail || '';
+      var msgNif         = t.invalidNif   || '';
+      var msgPastDate    = t.pastDate     || '';
+      var msgWeekend     = t.weekendDate  || '';
 
       // Clear previous errors
       bookingForm.querySelectorAll('.field-error-js').forEach(function (el) {

@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = 'Notas atualizadas.';
         }
 
+        $fetchStmt = $db->prepare("SELECT a.*, s.title_pt as service_name_pt, s.title_fr as service_name_fr, s.slug as service_slug FROM appointments a LEFT JOIN services s ON a.service_id = s.id WHERE a.id = ?");
         $fetchStmt->execute([$id]);
         $apt = $fetchStmt->fetch();
     }

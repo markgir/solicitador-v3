@@ -1353,9 +1353,226 @@ h1,h2,h3,h4,h5,h6 {
 @media (max-width: 768px) {
   .portfolio-grid { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .gallery-groups-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
 
 @media (max-width: 768px) {
   .contact-layout { grid-template-columns: 1fr; gap: 32px; }
   .contact-info-sidebar { position: static; }
+}
+
+/* =============================================
+   Gallery Groups Grid
+   ============================================= */
+.gallery-groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.gallery-group-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 2px 12px var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.gallery-group-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--shadow-md);
+}
+
+.gallery-group-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #eee;
+}
+
+.gallery-group-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-group-card:hover .gallery-group-image img {
+  transform: scale(1.05);
+}
+
+.gallery-group-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #ccc;
+  background: #f0f0f0;
+}
+
+.gallery-group-info {
+  padding: 1.25rem;
+}
+
+.gallery-group-info h3 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--navy);
+  margin-bottom: 0.25rem;
+}
+
+.gallery-group-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =============================================
+   Lightbox
+   ============================================= */
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-overlay.active {
+  display: flex;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2.5rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10000;
+  line-height: 1;
+}
+
+.lightbox-close:hover {
+  color: var(--gold);
+}
+
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 90vh;
+  text-align: center;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.lightbox-content p {
+  color: white;
+  margin-top: 0.75rem;
+  font-size: 1rem;
+}
+
+/* =============================================
+   About Us Page
+   ============================================= */
+.about-section {
+  padding: 4rem 0;
+}
+
+.about-text {
+  max-width: 800px;
+  margin: 2rem auto;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.about-subtitle {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--navy);
+  margin: 3rem 0 1.5rem;
+  text-align: center;
+}
+
+.about-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.about-image-item {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.about-image-item img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.about-image-caption {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+  background: var(--white);
+}
+
+.about-partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.about-partner-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px var(--shadow);
+  transition: transform var(--transition);
+  width: 100%;
+}
+
+.about-partner-card:hover {
+  transform: translateY(-2px);
+}
+
+.partner-logo {
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.partner-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+@media (max-width: 768px) {
+  .about-images-grid { grid-template-columns: 1fr; }
+  .about-partners-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }

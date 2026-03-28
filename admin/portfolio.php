@@ -18,9 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
         }
     } elseif ($action === 'delete' && $itemId) {
         $db->prepare("DELETE FROM portfolio_items WHERE id = ?")->execute([$itemId]);
+    } elseif ($action === 'toggle_portfolio_page') {
+        $current = get_setting($db, 'portfolio_active');
+        set_setting($db, 'portfolio_active', $current === '0' ? '1' : '0');
     }
     redirect('/admin/portfolio.php');
 }
+
+$portfolioActive = get_setting($db, 'portfolio_active');
 
 try {
     $items = $db->query("SELECT * FROM portfolio_items ORDER BY sort_order ASC, created_at DESC")->fetchAll();
@@ -44,7 +49,16 @@ try {
     <main class="admin-main">
         <header class="admin-header">
             <h1>Portfólio</h1>
-            <a href="/admin/portfolio-edit.php" class="btn btn-gold">+ Novo Item</a>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                    <input type="hidden" name="action" value="toggle_portfolio_page">
+                    <button type="submit" class="btn btn-sm <?= $portfolioActive !== '0' ? 'btn-success' : 'btn-muted' ?>">
+                        Página <?= $portfolioActive !== '0' ? 'Ativa' : 'Inativa' ?>
+                    </button>
+                </form>
+                <a href="/admin/portfolio-edit.php" class="btn btn-gold">+ Novo Item</a>
+            </div>
         </header>
 
         <div class="admin-card">

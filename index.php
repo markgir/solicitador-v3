@@ -9,20 +9,38 @@ if (isset($_GET['lang'])) {
 
 $lang = get_language();
 $db = get_db();
-$stmt = $db->query("SELECT * FROM services WHERE active = 1 ORDER BY sort_order ASC");
-$services = $stmt->fetchAll();
+
+try {
+    $stmt = $db->query("SELECT * FROM services WHERE active = 1 ORDER BY sort_order ASC");
+    $services = $stmt->fetchAll();
+} catch (PDOException $e) {
+    $services = [];
+}
 
 // Fetch active banners
-$bannerStmt = $db->query("SELECT * FROM banners WHERE active = 1 ORDER BY sort_order ASC");
-$banners = $bannerStmt->fetchAll();
+try {
+    $bannerStmt = $db->query("SELECT * FROM banners WHERE active = 1 ORDER BY sort_order ASC");
+    $banners = $bannerStmt->fetchAll();
+} catch (PDOException $e) {
+    $banners = [];
+}
 
 // Fetch parallax image
-$parallaxImage = get_setting($db, 'parallax_image');
-$siteLogo = get_setting($db, 'site_logo');
+try {
+    $parallaxImage = get_setting($db, 'parallax_image');
+    $siteLogo = get_setting($db, 'site_logo');
+} catch (PDOException $e) {
+    $parallaxImage = '';
+    $siteLogo = '';
+}
 
 // Fetch latest 4 published blog posts
-$blogStmt = $db->query("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT 4");
-$latestPosts = $blogStmt->fetchAll();
+try {
+    $blogStmt = $db->query("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT 4");
+    $latestPosts = $blogStmt->fetchAll();
+} catch (PDOException $e) {
+    $latestPosts = [];
+}
 
 $pageTitle = lang('home.hero_title') . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';

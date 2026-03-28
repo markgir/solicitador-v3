@@ -136,13 +136,13 @@ function upload_image(array $file, string $subdir = ''): ?string {
         return null;
     }
 
-    $ext = match ($mimeType) {
+    $extMap = [
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
         'image/gif'  => 'gif',
         'image/webp' => 'webp',
-        default      => 'jpg',
-    };
+    ];
+    $ext = $extMap[$mimeType] ?? 'jpg';
 
     $uploadsDir = __DIR__ . '/../uploads';
     if ($subdir) {

@@ -1,7 +1,11 @@
 <?php
 $currentLang = get_language();
 $footerDb = get_db();
-$footerLogo = get_setting($footerDb, 'site_logo');
+try {
+    $footerLogo = get_setting($footerDb, 'site_logo');
+} catch (PDOException $e) {
+    $footerLogo = '';
+}
 ?>
 <footer class="footer" id="contact">
     <div class="container footer-grid">

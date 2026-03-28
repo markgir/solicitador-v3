@@ -1,23 +1,39 @@
-Options -Indexes
-Options -MultiViews
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
 
 <FilesMatch "\.(db|sqlite|log)$">
-    Order Allow,Deny
-    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
 
 <Files "install.php">
     # Uncomment to block access after installation:
-    # Order Allow,Deny
-    # Deny from all
+    # <IfModule mod_authz_core.c>
+    #     Require all denied
+    # </IfModule>
+    # <IfModule !mod_authz_core.c>
+    #     Order Allow,Deny
+    #     Deny from all
+    # </IfModule>
 </Files>
 
-RewriteEngine On
-RewriteBase /
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^service/([a-z0-9-]+)/?$ /service.php?slug=$1 [L,QSA]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^service/([a-z0-9-]+)/?$ /service.php?slug=$1 [L,QSA]
+</IfModule>
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options nosniff

@@ -10,9 +10,17 @@ $pageTitle = $pageTitle ?? 'Solicitador';
 $currentLang = get_language();
 
 $headerDb = get_db();
-$siteLogo = get_setting($headerDb, 'site_logo');
-$menuStmt = $headerDb->query("SELECT * FROM menu_items WHERE active = 1 ORDER BY sort_order ASC");
-$menuItems = $menuStmt->fetchAll();
+try {
+    $siteLogo = get_setting($headerDb, 'site_logo');
+} catch (PDOException $e) {
+    $siteLogo = '';
+}
+try {
+    $menuStmt = $headerDb->query("SELECT * FROM menu_items WHERE active = 1 ORDER BY sort_order ASC");
+    $menuItems = $menuStmt->fetchAll();
+} catch (PDOException $e) {
+    $menuItems = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>">

@@ -14,14 +14,20 @@ $page = max(1, (int)($_GET['page'] ?? 1));
 $perPage = 9;
 $offset = ($page - 1) * $perPage;
 
-$totalPosts = (int)$db->query("SELECT COUNT(*) FROM blog_posts WHERE published = 1")->fetchColumn();
-$totalPages = max(1, (int)ceil($totalPosts / $perPage));
+try {
+    $totalPosts = (int)$db->query("SELECT COUNT(*) FROM blog_posts WHERE published = 1")->fetchColumn();
+    $totalPages = max(1, (int)ceil($totalPosts / $perPage));
 
-$stmt = $db->prepare("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?");
-$stmt->bindValue(1, $perPage, PDO::PARAM_INT);
-$stmt->bindValue(2, $offset, PDO::PARAM_INT);
-$stmt->execute();
-$posts = $stmt->fetchAll();
+    $stmt = $db->prepare("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT ? OFFSET ?");
+    $stmt->bindValue(1, $perPage, PDO::PARAM_INT);
+    $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $posts = $stmt->fetchAll();
+} catch (PDOException $e) {
+    $totalPosts = 0;
+    $totalPages = 1;
+    $posts = [];
+}
 
 $pageTitle = lang('blog.title') . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';

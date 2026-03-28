@@ -12,8 +12,12 @@ $db = get_db();
 
 $preselectedService = isset($_GET['service']) ? trim($_GET['service']) : '';
 
-$stmt = $db->query("SELECT * FROM services WHERE active = 1 ORDER BY sort_order ASC");
-$services = $stmt->fetchAll();
+try {
+    $stmt = $db->query("SELECT * FROM services WHERE active = 1 ORDER BY sort_order ASC");
+    $services = $stmt->fetchAll();
+} catch (PDOException $e) {
+    $services = [];
+}
 
 $errors = [];
 $formData = [

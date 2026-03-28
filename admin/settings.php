@@ -55,19 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
 
     // Handle site colors
     $colorKeys = ['color_primary', 'color_primary_dark', 'color_accent', 'color_accent_dark', 'color_bg', 'color_text'];
-    if (isset($_POST['save_colors'])) {
-        foreach ($colorKeys as $ck) {
-            $val = trim($_POST[$ck] ?? '');
-            if ($val === '' || is_valid_hex_color($val)) {
-                set_setting($db, $ck, $val);
-            } else {
-                $errors[] = 'Cor inválida para ' . sanitize($ck) . '.';
-            }
-        }
-        if (empty($errors)) {
-            $success = 'Cores atualizadas com sucesso.';
-        }
-    }
+    $colorLabels = [
+        'color_primary'      => 'Cor Primária',
+        'color_primary_dark' => 'Cor Primária Escura',
+        'color_accent'       => 'Cor de Destaque',
+        'color_accent_dark'  => 'Cor de Destaque Escura',
+        'color_bg'           => 'Cor de Fundo',
+        'color_text'         => 'Cor do Texto',
+    ];
 
     // Handle reset colors
     if (isset($_POST['reset_colors'])) {
@@ -75,6 +70,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
             set_setting($db, $ck, '');
         }
         $success = 'Cores restauradas para os valores originais.';
+    } elseif (isset($_POST['save_colors'])) {
+        foreach ($colorKeys as $ck) {
+            $val = trim($_POST[$ck] ?? '');
+            if ($val === '' || is_valid_hex_color($val)) {
+                set_setting($db, $ck, $val);
+            } else {
+                $errors[] = 'Cor inválida para ' . sanitize($colorLabels[$ck] ?? $ck) . '.';
+            }
+        }
+        if (empty($errors)) {
+            $success = 'Cores atualizadas com sucesso.';
+        }
     }
 
     if (empty($errors) && empty($success)) {

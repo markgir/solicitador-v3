@@ -41,7 +41,7 @@ foreach ($colorMap as $settingKey => $cssVar) {
     }
 }
 if ($colorOverrides): ?>
-    <style>:root{<?= implode(';', $colorOverrides) ?>}</style>
+    <style>:root{<?= htmlspecialchars(implode(';', $colorOverrides), ENT_QUOTES, 'UTF-8') ?>}</style>
 <?php endif; ?>
 </head>
 <body>

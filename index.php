@@ -29,25 +29,25 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <?php if (!empty($banners)): ?>
-<section class="banner-section">
+<section class="banner-section banner-hero">
     <div class="banner-slider" id="bannerSlider">
         <?php foreach ($banners as $i => $banner):
             $bannerTitle = $lang === 'fr' ? $banner['title_fr'] : $banner['title_pt'];
         ?>
         <div class="banner-slide <?= $i === 0 ? 'active' : '' ?>">
             <img src="<?= sanitize($banner['image_url']) ?>" alt="<?= sanitize($bannerTitle) ?>">
-            <?php if ($bannerTitle): ?>
-            <div class="banner-overlay">
-                <div class="container">
-                    <h2><?= sanitize($bannerTitle) ?></h2>
-                </div>
-            </div>
-            <?php endif; ?>
             <?php if ($banner['link']): ?>
             <a href="<?= sanitize($banner['link']) ?>" class="banner-link-overlay"></a>
             <?php endif; ?>
         </div>
         <?php endforeach; ?>
+        <div class="banner-hero-overlay">
+            <div class="container">
+                <h1><?= lang('home.hero_title') ?></h1>
+                <p><?= lang('home.hero_subtitle') ?></p>
+                <a href="/booking.php" class="btn btn-gold btn-large"><?= lang('home.hero_cta') ?></a>
+            </div>
+        </div>
         <?php if (count($banners) > 1): ?>
         <button class="banner-nav banner-prev" id="bannerPrev" aria-label="Previous">&#10094;</button>
         <button class="banner-nav banner-next" id="bannerNext" aria-label="Next">&#10095;</button>
@@ -59,15 +59,15 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
 </section>
-<?php endif; ?>
-
+<?php else: ?>
 <section class="hero">
     <div class="container">
         <h1><?= lang('home.hero_title') ?></h1>
         <p><?= lang('home.hero_subtitle') ?></p>
-        <a href="/booking.php" class="btn btn-gold"><?= lang('home.hero_cta') ?></a>
+        <a href="/booking.php" class="btn btn-gold btn-large"><?= lang('home.hero_cta') ?></a>
     </div>
 </section>
+<?php endif; ?>
 
 <section class="services-section" id="services">
     <div class="container">

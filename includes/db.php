@@ -1,13 +1,14 @@
 <?php
 function get_db(): PDO {
-    $dir = __DIR__ . '/../database';
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
+    $configFile = __DIR__ . '/../config.php';
+    if (!file_exists($configFile)) {
+        die('Ficheiro config.php não encontrado. Copie config.example.php para config.php e preencha os dados da base de dados.');
     }
-    $dsn = 'sqlite:' . $dir . '/solicitor.db';
-    $pdo = new PDO($dsn);
+    $cfg = require $configFile;
+
+    $dsn = 'mysql:host=' . $cfg['db_host'] . ';dbname=' . $cfg['db_name'] . ';charset=' . ($cfg['db_charset'] ?? 'utf8mb4');
+    $pdo = new PDO($dsn, $cfg['db_user'], $cfg['db_pass']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $pdo->exec('PRAGMA journal_mode=WAL');
     return $pdo;
 }

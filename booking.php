@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $ref = generate_payment_reference();
                 try {
-                    $insert = $db->prepare("INSERT INTO appointments (name, email, phone, nif, address, service_id, preferred_date, preferred_time, notes, payment_reference, status, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid', datetime('now'))");
+                    $insert = $db->prepare("INSERT INTO appointments (name, email, phone, nif, address, service_id, preferred_date, preferred_time, notes, payment_reference, status, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid', NOW())");
                     $insert->execute([
                         $formData['name'],
                         $formData['email'],

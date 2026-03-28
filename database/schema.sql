@@ -129,6 +129,23 @@ CREATE TABLE `blog_posts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------
+-- Table: documents
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `documents`;
+CREATE TABLE `documents` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title_pt` VARCHAR(255) NOT NULL,
+    `title_fr` VARCHAR(255) NOT NULL,
+    `description_pt` TEXT DEFAULT '',
+    `description_fr` TEXT DEFAULT '',
+    `file_url` VARCHAR(500) NOT NULL,
+    `original_filename` VARCHAR(255) NOT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
 -- Seed data: default admin user (admin / admin123)
 -- Change the password after first login!
 -- -----------------------------------------------------------

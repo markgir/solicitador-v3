@@ -146,6 +146,51 @@ CREATE TABLE `documents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------
+-- Table: portfolio_items
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `portfolio_items`;
+CREATE TABLE `portfolio_items` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title_pt` VARCHAR(255) NOT NULL,
+    `title_fr` VARCHAR(255) NOT NULL,
+    `description_pt` TEXT DEFAULT '',
+    `description_fr` TEXT DEFAULT '',
+    `image_url` VARCHAR(500) NOT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: gallery_images
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `gallery_images`;
+CREATE TABLE `gallery_images` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title_pt` VARCHAR(255) DEFAULT '',
+    `title_fr` VARCHAR(255) DEFAULT '',
+    `description_pt` TEXT DEFAULT '',
+    `description_fr` TEXT DEFAULT '',
+    `image_url` VARCHAR(500) NOT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: homepage_sections
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `homepage_sections`;
+CREATE TABLE `homepage_sections` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `section_key` VARCHAR(50) UNIQUE NOT NULL,
+    `label_pt` VARCHAR(100) NOT NULL,
+    `label_fr` VARCHAR(100) NOT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
 -- Table: contact_messages
 -- -----------------------------------------------------------
 DROP TABLE IF EXISTS `contact_messages`;
@@ -197,3 +242,15 @@ INSERT INTO `menu_items` (`title_pt`, `title_fr`, `url`, `target`, `active`, `so
 ('Blog', 'Blog', '/blog.php', '_self', 1, 3),
 ('Consulta', 'Consultation', '/booking.php', '_self', 1, 4),
 ('Contacto', 'Contact', '/contact.php', '_self', 1, 5);
+
+-- -----------------------------------------------------------
+-- Seed data: default homepage sections (order + visibility)
+-- -----------------------------------------------------------
+INSERT INTO `homepage_sections` (`section_key`, `label_pt`, `label_fr`, `active`, `sort_order`) VALUES
+('banners', 'Banners / Hero', 'Bannières / Hero', 1, 1),
+('services', 'Serviços', 'Services', 1, 2),
+('parallax', 'Parallax', 'Parallax', 1, 3),
+('portfolio', 'Portfólio', 'Portfolio', 1, 4),
+('gallery', 'Galeria de Imagens', 'Galerie d''Images', 1, 5),
+('documents', 'Documentos', 'Documents', 1, 6),
+('blog', 'Blog', 'Blog', 1, 7);

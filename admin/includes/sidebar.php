@@ -12,7 +12,10 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
         <a href="/admin/menu.php" class="sidebar-link <?= $currentPage === 'menu.php' || $currentPage === 'menu-edit.php' ? 'active' : '' ?>">&#x2630; Menu</a>
         <a href="/admin/blog.php" class="sidebar-link <?= $currentPage === 'blog.php' || $currentPage === 'blog-edit.php' ? 'active' : '' ?>">&#x1F4DD; Blog</a>
         <a href="/admin/documents.php" class="sidebar-link <?= $currentPage === 'documents.php' || $currentPage === 'document-edit.php' ? 'active' : '' ?>">&#x1F4C4; Documentos</a>
+        <a href="/admin/portfolio.php" class="sidebar-link <?= $currentPage === 'portfolio.php' || $currentPage === 'portfolio-edit.php' ? 'active' : '' ?>">&#x1F4BC; Portfólio</a>
+        <a href="/admin/gallery.php" class="sidebar-link <?= $currentPage === 'gallery.php' || $currentPage === 'gallery-edit.php' ? 'active' : '' ?>">&#x1F5BC;&#xFE0F; Galeria</a>
         <a href="/admin/messages.php" class="sidebar-link <?= $currentPage === 'messages.php' || $currentPage === 'message-detail.php' ? 'active' : '' ?>">&#x2709; Mensagens</a>
+        <a href="/admin/sections.php" class="sidebar-link <?= $currentPage === 'sections.php' ? 'active' : '' ?>">&#x1F4D1; Secções</a>
         <a href="/admin/settings.php" class="sidebar-link <?= $currentPage === 'settings.php' ? 'active' : '' ?>">&#x2699; Definições</a>
     </nav>
     <div class="sidebar-footer">

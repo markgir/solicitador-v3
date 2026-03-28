@@ -82,7 +82,7 @@ $services = $db->query("SELECT * FROM services ORDER BY sort_order ASC")->fetchA
                                     <input type="hidden" name="action" value="toggle_active">
                                     <input type="hidden" name="service_id" value="<?= (int)$svc['id'] ?>">
                                     <button type="submit" class="btn btn-sm <?= $svc['active'] ? 'btn-success' : 'btn-muted' ?>">
-                                        <?= $svc['active'] ? 'Activo' : 'Inactivo' ?>
+                                        <?= $svc['active'] ? 'Ativo' : 'Inativo' ?>
                                     </button>
                                 </form>
                             </td>

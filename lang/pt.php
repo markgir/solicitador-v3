@@ -31,8 +31,8 @@ return [
         'notes' => 'Notas Adicionais',
         'submit' => 'Submeter Pedido',
         'required' => '* Campo obrigatório',
-        'select_service' => '-- Seleccione um Serviço --',
-        'select_time' => '-- Seleccione uma Hora --',
+        'select_service' => '-- Selecione um Serviço --',
+        'select_time' => '-- Selecione uma Hora --',
     ],
     'confirm' => [
         'title' => 'Pedido Recebido',

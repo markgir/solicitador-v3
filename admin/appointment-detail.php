@@ -27,16 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newStatus = $_POST['status'] ?? '';
             if (in_array($newStatus, ['pending','confirmed','completed','cancelled'])) {
                 $db->prepare("UPDATE appointments SET status = ?, updated_at = datetime('now') WHERE id = ?")->execute([$newStatus, $id]);
-                $success = 'Estado actualizado.';
+                $success = 'Estado atualizado.';
             }
         } elseif ($action === 'update_paid') {
             $paid = (int)($_POST['paid'] ?? 0);
             $db->prepare("UPDATE appointments SET paid = ?, updated_at = datetime('now') WHERE id = ?")->execute([$paid ? 1 : 0, $id]);
-            $success = 'Pagamento actualizado.';
+            $success = 'Pagamento atualizado.';
         } elseif ($action === 'update_notes') {
             $notes = trim($_POST['admin_notes'] ?? '');
             $db->prepare("UPDATE appointments SET admin_notes = ?, updated_at = datetime('now') WHERE id = ?")->execute([$notes, $id]);
-            $success = 'Notas actualizadas.';
+            $success = 'Notas atualizadas.';
         }
 
         $fetchStmt->execute([$id]);
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="cancelled" <?= $apt['status'] === 'cancelled' ? 'selected' : '' ?>>Cancelado</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Actualizar Estado</button>
+                    <button type="submit" class="btn btn-primary">Atualizar Estado</button>
                 </form>
 
                 <form method="POST" style="margin-bottom:1.5rem;">
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <option value="1" <?= $apt['paid']  ? 'selected' : '' ?>>Pago</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Actualizar Pagamento</button>
+                    <button type="submit" class="btn btn-primary">Atualizar Pagamento</button>
                 </form>
 
                 <form method="POST">

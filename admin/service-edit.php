@@ -137,7 +137,7 @@ $pageAction = $isEdit ? 'Editar Serviço' : 'Novo Serviço';
                     <div class="form-group form-full">
                         <label>
                             <input type="checkbox" name="active" value="1" <?= $formData['active'] ? 'checked' : '' ?>>
-                            Activo
+                            Ativo
                         </label>
                     </div>
                 </div>

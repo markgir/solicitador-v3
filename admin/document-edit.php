@@ -7,15 +7,18 @@ $db = get_db();
 $id     = (int)($_GET['id'] ?? 0);
 $doc    = null;
 $isEdit = false;
+$errors = [];
 
 if ($id) {
-    $stmt = $db->prepare("SELECT * FROM documents WHERE id = ?");
-    $stmt->execute([$id]);
-    $doc = $stmt->fetch();
-    if ($doc) $isEdit = true;
+    try {
+        $stmt = $db->prepare("SELECT * FROM documents WHERE id = ?");
+        $stmt->execute([$id]);
+        $doc = $stmt->fetch();
+        if ($doc) $isEdit = true;
+    } catch (PDOException $e) {
+        $errors[] = 'Erro na base de dados. Verifique se a tabela "documents" existe. Execute install.php ou importe database/schema.sql.';
+    }
 }
-
-$errors   = [];
 $formData = [
     'title_pt'       => $doc['title_pt']       ?? '',
     'title_fr'       => $doc['title_fr']       ?? '',

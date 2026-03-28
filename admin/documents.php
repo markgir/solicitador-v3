@@ -4,25 +4,38 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/includes/auth.php';
 
 $db = get_db();
+$tableError = '';
+$dbErrorMsg = 'Erro na base de dados. Verifique se a tabela "documents" existe. Execute install.php ou importe database/schema.sql.';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ?? '')) {
     $action = $_POST['action'] ?? '';
     $docId = (int)($_POST['doc_id'] ?? 0);
 
-    if ($action === 'toggle_active' && $docId) {
-        $current = $db->prepare("SELECT active FROM documents WHERE id = ?");
-        $current->execute([$docId]);
-        $row = $current->fetch();
-        if ($row) {
-            $db->prepare("UPDATE documents SET active = ? WHERE id = ?")->execute([$row['active'] ? 0 : 1, $docId]);
+    try {
+        if ($action === 'toggle_active' && $docId) {
+            $current = $db->prepare("SELECT active FROM documents WHERE id = ?");
+            $current->execute([$docId]);
+            $row = $current->fetch();
+            if ($row) {
+                $db->prepare("UPDATE documents SET active = ? WHERE id = ?")->execute([$row['active'] ? 0 : 1, $docId]);
+            }
+        } elseif ($action === 'delete' && $docId) {
+            $db->prepare("DELETE FROM documents WHERE id = ?")->execute([$docId]);
         }
-    } elseif ($action === 'delete' && $docId) {
-        $db->prepare("DELETE FROM documents WHERE id = ?")->execute([$docId]);
+    } catch (PDOException $e) {
+        $tableError = $dbErrorMsg;
     }
-    redirect('/admin/documents.php');
+    if (empty($tableError)) {
+        redirect('/admin/documents.php');
+    }
 }
 
-$documents = $db->query("SELECT * FROM documents ORDER BY sort_order ASC, created_at DESC")->fetchAll();
+try {
+    $documents = $db->query("SELECT * FROM documents ORDER BY sort_order ASC, created_at DESC")->fetchAll();
+} catch (PDOException $e) {
+    $documents = [];
+    $tableError = $dbErrorMsg;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -42,6 +55,10 @@ $documents = $db->query("SELECT * FROM documents ORDER BY sort_order ASC, create
             <h1>Documentos</h1>
             <a href="/admin/document-edit.php" class="btn btn-gold">+ Novo Documento</a>
         </header>
+
+        <?php if (!empty($tableError)): ?>
+        <div class="admin-card"><div class="alert alert-error"><?= htmlspecialchars($tableError) ?></div></div>
+        <?php endif; ?>
 
         <div class="admin-card">
             <div class="table-responsive">

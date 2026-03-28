@@ -46,7 +46,7 @@ require_once __DIR__ . '/includes/header.php';
         <a href="/index.php#services" class="back-link">&larr; <?= lang('service.back') ?></a>
         <div class="service-content">
             <div class="service-desc">
-                <?= nl2br(sanitize($desc)) ?>
+                <?= render_content($desc) ?>
             </div>
             <div class="service-cta-box">
                 <h3><?= lang('service.consultation_request') ?></h3>

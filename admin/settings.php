@@ -42,6 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
         $success = 'Imagem parallax removida com sucesso.';
     }
 
+    // Handle social media links
+    $socialKeys = ['social_facebook', 'social_instagram', 'social_linkedin', 'social_twitter', 'social_youtube'];
+    foreach ($socialKeys as $sk) {
+        if (isset($_POST[$sk])) {
+            set_setting($db, $sk, trim($_POST[$sk]));
+        }
+    }
+    if (isset($_POST['save_social'])) {
+        $success = 'Redes sociais atualizadas com sucesso.';
+    }
+
     if (empty($errors) && empty($success)) {
         $success = 'Definições guardadas.';
     }
@@ -49,6 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
 
 $siteLogo = get_setting($db, 'site_logo');
 $parallaxImage = get_setting($db, 'parallax_image');
+$socialFacebook  = get_setting($db, 'social_facebook');
+$socialInstagram = get_setting($db, 'social_instagram');
+$socialLinkedin  = get_setting($db, 'social_linkedin');
+$socialTwitter   = get_setting($db, 'social_twitter');
+$socialYoutube   = get_setting($db, 'social_youtube');
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -124,6 +140,40 @@ $parallaxImage = get_setting($db, 'parallax_image');
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-gold">Guardar Imagem</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-card">
+            <h2>Redes Sociais</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">Insira os links das redes sociais. Deixe em branco para ocultar o ícone no site.</p>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                <input type="hidden" name="save_social" value="1">
+
+                <div class="form-group">
+                    <label for="social_facebook">Facebook</label>
+                    <input type="url" id="social_facebook" name="social_facebook" value="<?= sanitize($socialFacebook) ?>" placeholder="https://facebook.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="social_instagram">Instagram</label>
+                    <input type="url" id="social_instagram" name="social_instagram" value="<?= sanitize($socialInstagram) ?>" placeholder="https://instagram.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="social_linkedin">LinkedIn</label>
+                    <input type="url" id="social_linkedin" name="social_linkedin" value="<?= sanitize($socialLinkedin) ?>" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div class="form-group">
+                    <label for="social_twitter">X (Twitter)</label>
+                    <input type="url" id="social_twitter" name="social_twitter" value="<?= sanitize($socialTwitter) ?>" placeholder="https://x.com/...">
+                </div>
+                <div class="form-group">
+                    <label for="social_youtube">YouTube</label>
+                    <input type="url" id="social_youtube" name="social_youtube" value="<?= sanitize($socialYoutube) ?>" placeholder="https://youtube.com/...">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-gold">Guardar Redes Sociais</button>
                 </div>
             </form>
         </div>

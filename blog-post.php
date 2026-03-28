@@ -55,7 +55,7 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
 
         <div class="blog-detail-content">
-            <?= nl2br(sanitize($postContent)) ?>
+            <?= render_content($postContent) ?>
         </div>
 
         <div style="margin-top: 3rem;">

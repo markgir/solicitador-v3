@@ -140,7 +140,12 @@ INSERT INTO `admin_users` (`username`, `password_hash`) VALUES
 -- -----------------------------------------------------------
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('site_logo', ''),
-('parallax_image', '');
+('parallax_image', ''),
+('social_facebook', ''),
+('social_instagram', ''),
+('social_linkedin', ''),
+('social_twitter', ''),
+('social_youtube', '');
 
 -- -----------------------------------------------------------
 -- Seed data: default menu items

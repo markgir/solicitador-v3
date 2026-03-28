@@ -31,11 +31,8 @@ $countStmt->execute($params);
 $total      = (int)$countStmt->fetchColumn();
 $totalPages = (int)ceil($total / $perPage);
 
-$stmt = $db->prepare("SELECT a.*, s.title_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id $whereSQL ORDER BY a.created_at DESC LIMIT ? OFFSET ?");
-$listParams   = array_values($params);
-$listParams[] = $perPage;
-$listParams[] = $offset;
-$stmt->execute($listParams);
+$stmt = $db->prepare("SELECT a.*, s.title_pt as service_name FROM appointments a LEFT JOIN services s ON a.service_id = s.id $whereSQL ORDER BY a.created_at DESC LIMIT " . (int)$perPage . " OFFSET " . (int)$offset);
+$stmt->execute($params);
 $appointments = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>

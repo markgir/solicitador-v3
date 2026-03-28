@@ -25,7 +25,7 @@ if (!$post) {
     $pageTitle = '404 | Solicitador';
     require_once __DIR__ . '/includes/header.php';
     echo '<section class="page-hero"><div class="container"><h1>404</h1></div></section>';
-    echo '<section class="service-detail"><div class="container"><p class="text-center">Artigo não encontrado.</p></div></section>';
+    echo '<section class="blog-detail"><div class="container"><p class="text-center">Artigo não encontrado.</p></div></section>';
     require_once __DIR__ . '/includes/footer.php';
     exit;
 }

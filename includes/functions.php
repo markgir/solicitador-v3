@@ -171,6 +171,11 @@ function get_setting(PDO $db, string $key): string {
 }
 
 function set_setting(PDO $db, string $key, string $value): void {
-    $stmt = $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
-    $stmt->execute([$key, $value]);
+    $existing = $db->prepare("SELECT id FROM site_settings WHERE setting_key = ?");
+    $existing->execute([$key]);
+    if ($existing->fetch()) {
+        $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?")->execute([$value, $key]);
+    } else {
+        $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)")->execute([$key, $value]);
+    }
 }

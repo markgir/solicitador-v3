@@ -166,7 +166,8 @@ $passwordHash = password_hash('admin123', PASSWORD_DEFAULT);
 $db->prepare("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)")->execute(['admin', $passwordHash]);
 
 // Seed default site settings
-$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('site_logo', ''), ('parallax_image', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('site_logo', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('parallax_image', '')");
 
 // Seed default menu items
 $menuStmt = $db->prepare("INSERT INTO menu_items (title_pt, title_fr, url, target, active, sort_order) VALUES (?, ?, ?, '_self', 1, ?)");

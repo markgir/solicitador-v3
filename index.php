@@ -24,6 +24,14 @@ $siteLogo = get_setting($db, 'site_logo');
 $blogStmt = $db->query("SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT 4");
 $latestPosts = $blogStmt->fetchAll();
 
+// Fetch active documents for download
+try {
+    $docStmt = $db->query("SELECT * FROM documents WHERE active = 1 ORDER BY sort_order ASC, created_at DESC");
+    $activeDocuments = $docStmt->fetchAll();
+} catch (PDOException $e) {
+    $activeDocuments = [];
+}
+
 $pageTitle = lang('home.hero_title') . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -100,6 +108,31 @@ require_once __DIR__ . '/includes/header.php';
             <?php else: ?>
                 <h2 class="parallax-title">Solicitador</h2>
             <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<?php if (!empty($activeDocuments)): ?>
+<section class="documents-section">
+    <div class="container">
+        <h2 class="section-title"><?= lang('documents.title') ?></h2>
+        <div class="documents-grid">
+            <?php foreach ($activeDocuments as $document):
+                $docTitle = $lang === 'fr' ? $document['title_fr'] : $document['title_pt'];
+                $docDesc = $lang === 'fr' ? $document['description_fr'] : $document['description_pt'];
+            ?>
+            <div class="document-card">
+                <div class="document-card-icon">&#x1F4C4;</div>
+                <div class="document-card-content">
+                    <h3><?= sanitize($docTitle) ?></h3>
+                    <?php if (!empty($docDesc)): ?>
+                    <p><?= sanitize($docDesc) ?></p>
+                    <?php endif; ?>
+                </div>
+                <a href="<?= sanitize($document['file_url']) ?>" class="btn btn-outline btn-sm" download="<?= sanitize($document['original_filename']) ?>"><?= lang('documents.download') ?> &darr;</a>
+            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>

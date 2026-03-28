@@ -151,6 +151,7 @@ h1,h2,h3,h4,h5,h6 {
   align-items: center;
   height: 100%;
   gap: 1.5rem;
+  position: relative;
 }
 .nav-logo {
   font-family: var(--font-heading);
@@ -166,7 +167,9 @@ h1,h2,h3,h4,h5,h6 {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  margin-left: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .nav-links li a {
   padding: 0.4rem 0.75rem;
@@ -182,6 +185,7 @@ h1,h2,h3,h4,h5,h6 {
   display: flex;
   gap: 0.3rem;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .nav-toggle {
@@ -741,6 +745,7 @@ h1,h2,h3,h4,h5,h6 {
     padding: 1rem;
     box-shadow: 0 4px 16px var(--shadow);
     gap: 0.25rem;
+    transform: none;
   }
   .nav-links.open { display: flex; }
   .nav-links li { width: 100%; }
@@ -770,7 +775,7 @@ h1,h2,h3,h4,h5,h6 {
 
 /* ── Logo in Navbar ────────────────────────────────────────── */
 .nav-logo-img {
-  height: 45px;
+  height: 90px;
   width: auto;
   display: block;
 }
@@ -968,6 +973,55 @@ h1,h2,h3,h4,h5,h6 {
   font-size: clamp(2rem, 4vw, 3rem);
   color: var(--white);
   font-weight: 700;
+}
+
+/* ── Documents Section (Homepage) ──────────────────────────── */
+.documents-section {
+  padding: 80px 0;
+  background: var(--bg);
+}
+.documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.document-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.document-card:hover {
+  box-shadow: 0 8px 28px var(--shadow-md);
+  transform: translateY(-2px);
+}
+.document-card-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+.document-card-content {
+  flex: 1;
+  min-width: 0;
+}
+.document-card-content h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.35;
+  color: var(--navy);
+}
+.document-card-content p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+.document-card .btn {
+  flex-shrink: 0;
 }
 
 /* ── Blog Preview (Homepage) ───────────────────────────────── */

@@ -11,6 +11,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
         <a href="/admin/banners.php" class="sidebar-link <?= $currentPage === 'banners.php' || $currentPage === 'banner-edit.php' ? 'active' : '' ?>">&#x1F5BC; Banners</a>
         <a href="/admin/menu.php" class="sidebar-link <?= $currentPage === 'menu.php' || $currentPage === 'menu-edit.php' ? 'active' : '' ?>">&#x2630; Menu</a>
         <a href="/admin/blog.php" class="sidebar-link <?= $currentPage === 'blog.php' || $currentPage === 'blog-edit.php' ? 'active' : '' ?>">&#x1F4DD; Blog</a>
+        <a href="/admin/documents.php" class="sidebar-link <?= $currentPage === 'documents.php' || $currentPage === 'document-edit.php' ? 'active' : '' ?>">&#x1F4C4; Documentos</a>
         <a href="/admin/settings.php" class="sidebar-link <?= $currentPage === 'settings.php' ? 'active' : '' ?>">&#x2699; Definições</a>
     </nav>
     <div class="sidebar-footer">

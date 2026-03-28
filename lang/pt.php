@@ -94,4 +94,8 @@ return [
         'back' => 'Voltar ao Blog',
         'published_on' => 'Publicado em',
     ],
+    'documents' => [
+        'title' => 'Documentos para Download',
+        'download' => 'Descarregar',
+    ],
 ];

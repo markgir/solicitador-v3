@@ -8,41 +8,41 @@ $db->exec("DROP TABLE IF EXISTS services");
 $db->exec("DROP TABLE IF EXISTS admin_users");
 
 $db->exec("CREATE TABLE services (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug TEXT UNIQUE NOT NULL,
-    title_pt TEXT NOT NULL,
-    title_fr TEXT NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    title_pt VARCHAR(255) NOT NULL,
+    title_fr VARCHAR(255) NOT NULL,
     description_pt TEXT NOT NULL,
     description_fr TEXT NOT NULL,
-    image_url TEXT DEFAULT '',
-    active INTEGER DEFAULT 1,
-    sort_order INTEGER DEFAULT 0
-)");
+    image_url VARCHAR(500) DEFAULT '',
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 $db->exec("CREATE TABLE appointments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    nif TEXT NOT NULL,
-    address TEXT NOT NULL,
-    service_id INTEGER,
-    preferred_date TEXT NOT NULL,
-    preferred_time TEXT NOT NULL,
-    notes TEXT DEFAULT '',
-    status TEXT DEFAULT 'pending',
-    payment_status TEXT DEFAULT 'unpaid',
-    payment_reference TEXT DEFAULT '',
-    consultation_notes TEXT DEFAULT '',
-    confirmed_at TEXT DEFAULT NULL,
-    created_at TEXT DEFAULT (datetime('now'))
-)");
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    nif VARCHAR(20) NOT NULL,
+    address VARCHAR(500) NOT NULL,
+    service_id INT,
+    preferred_date VARCHAR(20) NOT NULL,
+    preferred_time VARCHAR(10) NOT NULL,
+    notes TEXT DEFAULT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    payment_status VARCHAR(20) DEFAULT 'unpaid',
+    payment_reference VARCHAR(50) DEFAULT '',
+    consultation_notes TEXT DEFAULT NULL,
+    confirmed_at DATETIME DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 $db->exec("CREATE TABLE admin_users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL
-)");
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 $services = [
     [
@@ -122,7 +122,7 @@ $db->prepare("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)")-
 echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Install</title><style>body{font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 24px;background:#f9f8f6;color:#333;}h1{color:#1e3a5f;}a{color:#1e3a5f;}.warn{background:#fff3cd;border:1px solid #ffc107;padding:12px 16px;border-radius:4px;margin-top:1rem;}</style></head><body>';
 echo '<h1>&#x2705; Installation Complete</h1>';
 echo '<ul>';
-echo '<li>Database created: <code>database/solicitor.db</code></li>';
+echo '<li>MySQL database tables created</li>';
 echo '<li>8 services inserted (PT + FR)</li>';
 echo '<li>Admin user created: <strong>admin</strong> / <strong>admin123</strong></li>';
 echo '</ul>';

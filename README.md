@@ -31,7 +31,7 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
 - **Admin dashboard** — statistics, recent appointments, and quick overview
 - **Appointment management** — filter, view, update status, mark payments, and add internal notes
 - **Service management** — create, edit, toggle active/inactive, reorder, and delete services
-- **SQLite database** — portable, no external database server required
+- **MySQL database** — compatible with shared hosting and phpMyAdmin
 - **Responsive design** — works on desktop, tablet, and mobile
 - **CSRF protection** — on all forms
 - **Clean URLs** — via Apache mod_rewrite (e.g. `/service/procuracoes`)
@@ -70,9 +70,10 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
 ## Requirements
 
 - **PHP 7.4+** (tested with PHP 8.x)
-- **PDO SQLite extension** enabled (`pdo_sqlite`)
+- **PDO MySQL extension** enabled (`pdo_mysql`)
+- **MySQL 5.7+** or **MariaDB 10.3+**
 - **Apache** with `mod_rewrite` enabled (for clean URLs and security headers)
-- Write permissions on the `database/` and `logs/` directories
+- Write permissions on the `logs/` directory
 
 ---
 
@@ -87,13 +88,51 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
 
 2. **Set directory permissions**
 
-   Make sure the web server can write to the `database/` and `logs/` directories:
+   Make sure the web server can write to the `logs/` directory:
 
    ```bash
-   chmod 775 database/ logs/
+   chmod 775 logs/
    ```
 
-3. **Configure your web server**
+3. **Create the MySQL database**
+
+   **Option A — Import via phpMyAdmin:**
+
+   1. Open phpMyAdmin in your shared hosting panel
+   2. Create a new database (e.g. `solicitador`)
+   3. Select the new database, then go to the **Import** tab
+   4. Upload the file `database/schema.sql` and click **Go**
+
+   **Option B — Via command line:**
+
+   ```bash
+   mysql -u root -p -e "CREATE DATABASE solicitador CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   mysql -u root -p solicitador < database/schema.sql
+   ```
+
+4. **Configure database credentials**
+
+   Copy the example configuration file and edit it with your database details:
+
+   ```bash
+   cp config.example.php config.php
+   ```
+
+   Open `config.php` and fill in your MySQL credentials:
+
+   ```php
+   return [
+       'db_host' => 'localhost',
+       'db_name' => 'solicitador',
+       'db_user' => 'your_db_user',
+       'db_pass' => 'your_db_password',
+       'db_charset' => 'utf8mb4',
+   ];
+   ```
+
+   > 📄 **Configuration file to edit:** `config.php` (in the project root)
+
+5. **Configure your web server**
 
    Point the document root to the project folder. For Apache, ensure `mod_rewrite` is enabled:
 
@@ -108,8 +147,9 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
    php -S localhost:8080
    ```
 
-4. **Run the installer**
+6. **Run the installer** *(alternative to phpMyAdmin import)*
 
+   If you did not import `database/schema.sql` via phpMyAdmin, you can use the web installer instead.
    Open your browser and navigate to:
 
    ```
@@ -117,12 +157,11 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
    ```
 
    This will:
-   - Create the SQLite database at `database/solicitor.db`
-   - Create the `services`, `appointments`, and `admin_users` tables
+   - Create the `services`, `appointments`, and `admin_users` tables in your MySQL database
    - Seed 8 legal services (in Portuguese and French)
    - Create a default admin user: **admin** / **admin123**
 
-5. **Secure the installation**
+7. **Secure the installation**
 
    After installation, delete or restrict access to `install.php`:
 
@@ -139,7 +178,7 @@ A bilingual (Portuguese / French) legal services booking platform for Portuguese
    </Files>
    ```
 
-6. **Access the application**
+8. **Access the application**
 
    - **Public site:** [http://localhost:8080/](http://localhost:8080/)
    - **Admin panel:** [http://localhost:8080/admin/login.php](http://localhost:8080/admin/login.php)
@@ -169,11 +208,11 @@ solicitador-v3/
 │   └── js/
 │       └── main.js             # Client-side JavaScript
 ├── database/
-│   └── .gitkeep                # SQLite DB created here at runtime
+│   └── schema.sql              # MySQL schema & seed data (import via phpMyAdmin)
 ├── docs/
 │   └── screenshots/            # Application screenshots
 ├── includes/
-│   ├── db.php                  # PDO database connection
+│   ├── db.php                  # PDO MySQL database connection
 │   ├── functions.php           # Helper functions (CSRF, translations, etc.)
 │   ├── header.php              # HTML header template
 │   └── footer.php              # HTML footer template
@@ -183,6 +222,8 @@ solicitador-v3/
 ├── logs/                       # Email log directory
 ├── .htaccess                   # Apache rewrite rules & security headers
 ├── .gitignore
+├── config.example.php          # Database config template (copy to config.php)
+├── config.php                  # ⚙️ YOUR database credentials (not in git)
 ├── booking.php                 # Booking request form
 ├── booking-confirm.php         # Booking confirmation page
 ├── index.php                   # Homepage
@@ -236,7 +277,7 @@ The platform comes pre-loaded with 8 legal services (available in PT and FR):
 
 | File | Functions |
 |---|---|
-| `includes/db.php` | `get_db()` — Returns a PDO connection to the SQLite database with WAL mode enabled |
+| `includes/db.php` | `get_db()` — Returns a PDO connection to the MySQL database using credentials from `config.php` |
 | `includes/functions.php` | `__()` — Translation helper, returns localized string by key. `csrf_token()` — Generates and returns a CSRF token for form protection. `verify_csrf()` — Validates the submitted CSRF token. `sanitize()` — Escapes HTML entities to prevent XSS. `log_email()` — Logs email events to `logs/email.log` |
 | `includes/header.php` | Shared HTML header with navigation bar, language switcher, and responsive mobile menu |
 | `includes/footer.php` | Shared HTML footer with contact information and copyright |

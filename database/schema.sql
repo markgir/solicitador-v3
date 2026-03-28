@@ -146,6 +146,24 @@ CREATE TABLE `documents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------
+-- Table: contact_messages
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `contact_messages`;
+CREATE TABLE `contact_messages` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(50) DEFAULT '',
+    `subject` VARCHAR(255) NOT NULL,
+    `message` TEXT NOT NULL,
+    `document_url` VARCHAR(500) DEFAULT '',
+    `document_filename` VARCHAR(255) DEFAULT '',
+    `status` VARCHAR(20) DEFAULT 'new',
+    `admin_notes` TEXT DEFAULT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
 -- Seed data: default admin user (admin / admin123)
 -- Change the password after first login!
 -- -----------------------------------------------------------
@@ -172,4 +190,4 @@ INSERT INTO `menu_items` (`title_pt`, `title_fr`, `url`, `target`, `active`, `so
 ('Serviços', 'Services', '/index.php#services', '_self', 1, 2),
 ('Blog', 'Blog', '/blog.php', '_self', 1, 3),
 ('Consulta', 'Consultation', '/booking.php', '_self', 1, 4),
-('Contacto', 'Contact', '/index.php#contact', '_self', 1, 5);
+('Contacto', 'Contact', '/contact.php', '_self', 1, 5);

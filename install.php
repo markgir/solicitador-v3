@@ -11,6 +11,7 @@ $db->exec("DROP TABLE IF EXISTS site_settings");
 $db->exec("DROP TABLE IF EXISTS menu_items");
 $db->exec("DROP TABLE IF EXISTS blog_posts");
 $db->exec("DROP TABLE IF EXISTS documents");
+$db->exec("DROP TABLE IF EXISTS contact_messages");
 
 $db->exec("CREATE TABLE services (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -104,6 +105,20 @@ $db->exec("CREATE TABLE documents (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
+$db->exec("CREATE TABLE contact_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) DEFAULT '',
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    document_url VARCHAR(500) DEFAULT '',
+    document_filename VARCHAR(255) DEFAULT '',
+    status VARCHAR(20) DEFAULT 'new',
+    admin_notes TEXT DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
 $services = [
     [
         'slug'           => 'procuracoes',
@@ -194,7 +209,7 @@ $menuStmt->execute(['Início', 'Accueil', '/index.php', 1]);
 $menuStmt->execute(['Serviços', 'Services', '/index.php#services', 2]);
 $menuStmt->execute(['Blog', 'Blog', '/blog.php', 3]);
 $menuStmt->execute(['Consulta', 'Consultation', '/booking.php', 4]);
-$menuStmt->execute(['Contacto', 'Contact', '/index.php#contact', 5]);
+$menuStmt->execute(['Contacto', 'Contact', '/contact.php', 5]);
 
 // Create uploads directory
 $uploadsDir = __DIR__ . '/uploads';
@@ -205,7 +220,7 @@ if (!is_dir($uploadsDir)) {
 echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Install</title><style>body{font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 24px;background:#f9f8f6;color:#333;}h1{color:#1e3a5f;}a{color:#1e3a5f;}.warn{background:#fff3cd;border:1px solid #ffc107;padding:12px 16px;border-radius:4px;margin-top:1rem;}</style></head><body>';
 echo '<h1>&#x2705; Installation Complete</h1>';
 echo '<ul>';
-echo '<li>MySQL database tables created (services, appointments, admin_users, banners, site_settings, menu_items, blog_posts, documents)</li>';
+echo '<li>MySQL database tables created (services, appointments, admin_users, banners, site_settings, menu_items, blog_posts, documents, contact_messages)</li>';
 echo '<li>8 services inserted (PT + FR)</li>';
 echo '<li>Default menu items created</li>';
 echo '<li>Admin user created: <strong>admin</strong> / <strong>admin123</strong></li>';

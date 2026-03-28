@@ -30,6 +30,7 @@ return [
         'time' => 'Hora Preferida',
         'notes' => 'Notas Adicionais',
         'submit' => 'Submeter Pedido',
+        'sending' => '⏳ A enviar...',
         'required' => '* Campo obrigatório',
         'select_service' => '-- Selecione um Serviço --',
         'select_time' => '-- Selecione uma Hora --',
@@ -76,6 +77,7 @@ return [
         'invalid_email' => 'Endereço de email inválido.',
         'invalid_nif' => 'NIF inválido (deve ter 9 dígitos).',
         'past_date' => 'A data deve ser no futuro.',
+        'weekend_date' => 'Por favor selecione um dia útil (segunda a sexta-feira).',
         'booking_failed' => 'Ocorreu um erro ao submeter o seu pedido. Por favor tente novamente.',
     ],
     'statuses' => [

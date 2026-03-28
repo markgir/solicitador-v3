@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Token inválido.';
     } else {
         $rawSlug = strtolower(trim($_POST['slug'] ?? ''));
-        $formData['slug']            = preg_replace('/[^a-z0-9-]/', '-', $rawSlug);
+        $formData['slug']            = trim(preg_replace('/[^a-z0-9]+/', '-', $rawSlug), '-');
         $formData['title_pt']        = trim($_POST['title_pt']        ?? '');
         $formData['title_fr']        = trim($_POST['title_fr']        ?? '');
         $formData['description_pt']  = trim($_POST['description_pt']  ?? '');

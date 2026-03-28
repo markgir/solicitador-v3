@@ -30,6 +30,7 @@ return [
         'time' => 'Heure Préférée',
         'notes' => 'Notes Supplémentaires',
         'submit' => 'Soumettre la Demande',
+        'sending' => '⏳ Envoi en cours...',
         'required' => '* Champ obligatoire',
         'select_service' => '-- Sélectionnez un Service --',
         'select_time' => '-- Sélectionnez une Heure --',
@@ -76,6 +77,7 @@ return [
         'invalid_email' => 'Adresse email invalide.',
         'invalid_nif' => 'NIF invalide (doit avoir 9 chiffres).',
         'past_date' => 'La date doit être dans le futur.',
+        'weekend_date' => 'Veuillez sélectionner un jour ouvrable (lundi au vendredi).',
         'booking_failed' => "Une erreur s'est produite lors de la soumission de votre demande. Veuillez réessayer.",
     ],
     'statuses' => [

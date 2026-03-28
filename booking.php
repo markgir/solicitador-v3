@@ -200,5 +200,15 @@ require_once __DIR__ . '/includes/header.php';
         </form>
     </div>
 </section>
+<script>
+window.i18n = {
+  required:    <?= json_encode(lang('errors.required_field')) ?>,
+  invalidEmail:<?= json_encode(lang('errors.invalid_email')) ?>,
+  invalidNif:  <?= json_encode(lang('errors.invalid_nif')) ?>,
+  pastDate:    <?= json_encode(lang('errors.past_date')) ?>,
+  weekendDate: <?= json_encode(lang('errors.weekend_date')) ?>,
+  sending:     <?= json_encode(lang('booking.sending')) ?>
+};
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

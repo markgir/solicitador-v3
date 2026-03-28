@@ -61,7 +61,8 @@
       var selected = new Date(this.value + 'T00:00:00');
       var dow = selected.getDay(); // 0=Sun, 6=Sat
       if (dow === 0 || dow === 6) {
-        this.setCustomValidity('Por favor selecione um dia útil (segunda a sexta-feira).');
+        var msg = (window.i18n && window.i18n.weekendDate) ? window.i18n.weekendDate : 'Por favor selecione um dia útil (segunda a sexta-feira).';
+        this.setCustomValidity(msg);
         this.reportValidity();
         this.value = '';
       } else {
@@ -75,6 +76,12 @@
   if (bookingForm) {
     bookingForm.addEventListener('submit', function (e) {
       var valid = true;
+      var t = window.i18n || {};
+      var msgRequired    = t.required     || 'Este campo é obrigatório.';
+      var msgEmail       = t.invalidEmail || 'Endereço de email inválido.';
+      var msgNif         = t.invalidNif   || 'NIF inválido (deve ter 9 dígitos).';
+      var msgPastDate    = t.pastDate     || 'A data deve ser no futuro.';
+      var msgWeekend     = t.weekendDate  || 'Por favor selecione um dia útil.';
 
       // Clear previous errors
       bookingForm.querySelectorAll('.field-error-js').forEach(function (el) {
@@ -96,52 +103,52 @@
       // Name
       var nameField = document.getElementById('name');
       if (nameField && nameField.value.trim() === '') {
-        showError(nameField, 'Este campo é obrigatório.');
+        showError(nameField, msgRequired);
       }
 
       // Email
       var emailField = document.getElementById('email');
       if (emailField) {
         if (emailField.value.trim() === '') {
-          showError(emailField, 'Este campo é obrigatório.');
+          showError(emailField, msgRequired);
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value.trim())) {
-          showError(emailField, 'Endereço de email inválido.');
+          showError(emailField, msgEmail);
         }
       }
 
       // Phone
       var phoneField = document.getElementById('phone');
       if (phoneField && phoneField.value.trim() === '') {
-        showError(phoneField, 'Este campo é obrigatório.');
+        showError(phoneField, msgRequired);
       }
 
       // NIF (optional but validate if filled)
       var nifField = document.getElementById('nif');
       if (nifField && nifField.value.trim() !== '' && !/^\d{9}$/.test(nifField.value.trim())) {
-        showError(nifField, 'NIF inválido (deve ter 9 dígitos).');
+        showError(nifField, msgNif);
       }
 
       // Service
       var serviceField = document.getElementById('service_slug');
       if (serviceField && serviceField.value === '') {
-        showError(serviceField, 'Este campo é obrigatório.');
+        showError(serviceField, msgRequired);
       }
 
       // Date
       var dateField = document.getElementById('preferred_date');
       if (dateField) {
         if (dateField.value === '') {
-          showError(dateField, 'Este campo é obrigatório.');
+          showError(dateField, msgRequired);
         } else {
           var selected = new Date(dateField.value + 'T00:00:00');
           var tomorrow = getTomorrow();
           tomorrow.setHours(0, 0, 0, 0);
           if (selected < tomorrow) {
-            showError(dateField, 'A data deve ser no futuro.');
+            showError(dateField, msgPastDate);
           } else {
             var dow = selected.getDay();
             if (dow === 0 || dow === 6) {
-              showError(dateField, 'Por favor selecione um dia útil.');
+              showError(dateField, msgWeekend);
             }
           }
         }
@@ -150,7 +157,7 @@
       // Time
       var timeField = document.getElementById('preferred_time');
       if (timeField && timeField.value === '') {
-        showError(timeField, 'Este campo é obrigatório.');
+        showError(timeField, msgRequired);
       }
 
       if (!valid) {
@@ -164,7 +171,7 @@
       var submitBtn = bookingForm.querySelector('button[type="submit"]');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ A enviar...';
+        submitBtn.textContent = (t.sending) ? t.sending : '⏳ A enviar...';
       }
     });
   }

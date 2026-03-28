@@ -766,16 +766,15 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 /* ── Language Flags ────────────────────────────────────────── */
-.flag-icon {
-  font-size: 1.3rem;
-  line-height: 1;
+.flag-img {
+  width: 28px;
+  height: 19px;
+  display: block;
+  border-radius: 3px;
 }
 .lang-btn {
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem;
   border-radius: var(--radius);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
   border: 2px solid transparent;
   transition: all var(--transition);
   display: flex;
@@ -786,7 +785,6 @@ h1,h2,h3,h4,h5,h6 {
 .lang-btn.active {
   border-color: var(--navy);
   background: transparent;
-  color: var(--navy);
 }
 
 /* ── Banner Section ────────────────────────────────────────── */
@@ -870,6 +868,49 @@ h1,h2,h3,h4,h5,h6 {
 }
 .banner-dot.active {
   background: var(--white);
+}
+
+/* ── Banner Hero (text overlay on banner) ─────────────────── */
+.banner-hero .banner-slider {
+  max-height: 600px;
+}
+.banner-hero .banner-slide img {
+  height: 600px;
+}
+.banner-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(22, 45, 74, 0.55);
+  pointer-events: none;
+}
+.banner-hero-overlay .container {
+  pointer-events: auto;
+}
+.banner-hero-overlay h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--white);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.banner-hero-overlay p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: rgba(255,255,255,0.9);
+  max-width: 650px;
+  margin: 0 auto 2rem;
+  font-weight: 300;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.banner-hero-overlay .btn {
+  text-shadow: none;
+}
+.banner-hero .banner-dots {
+  bottom: 1.5rem;
 }
 
 /* When banner present, hero doesn't need top padding */
@@ -1048,11 +1089,16 @@ h1,h2,h3,h4,h5,h6 {
   .blog-grid { grid-template-columns: 1fr; }
   .banner-slide img { height: 300px; }
   .banner-slider { max-height: 300px; }
+  .banner-hero .banner-slide img { height: 400px; }
+  .banner-hero .banner-slider { max-height: 400px; }
+  .banner-hero-overlay h1 { font-size: clamp(1.6rem, 4vw, 2.5rem); }
   .parallax-section { min-height: 250px; background-attachment: scroll; }
 }
 
 @media (max-width: 480px) {
   .banner-slide img { height: 200px; }
   .banner-slider { max-height: 200px; }
+  .banner-hero .banner-slide img { height: 350px; }
+  .banner-hero .banner-slider { max-height: 350px; }
   .banner-nav { padding: 0.5rem 0.75rem; font-size: 1rem; }
 }

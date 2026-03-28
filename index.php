@@ -32,8 +32,51 @@ try {
     $activeDocuments = [];
 }
 
+// Fetch active portfolio items
+try {
+    $portfolioStmt = $db->query("SELECT * FROM portfolio_items WHERE active = 1 ORDER BY sort_order ASC, created_at DESC");
+    $portfolioItems = $portfolioStmt->fetchAll();
+} catch (PDOException $e) {
+    $portfolioItems = [];
+}
+
+// Fetch active gallery images
+try {
+    $galleryStmt = $db->query("SELECT * FROM gallery_images WHERE active = 1 ORDER BY sort_order ASC, created_at DESC");
+    $galleryImages = $galleryStmt->fetchAll();
+} catch (PDOException $e) {
+    $galleryImages = [];
+}
+
+// Fetch homepage section order and visibility
+try {
+    $sectionStmt = $db->query("SELECT * FROM homepage_sections ORDER BY sort_order ASC");
+    $homepageSections = $sectionStmt->fetchAll();
+} catch (PDOException $e) {
+    $homepageSections = [];
+}
+
+// If no sections configured, use default order
+if (empty($homepageSections)) {
+    $homepageSections = [
+        ['section_key' => 'banners',   'active' => 1],
+        ['section_key' => 'services',  'active' => 1],
+        ['section_key' => 'parallax',  'active' => 1],
+        ['section_key' => 'portfolio', 'active' => 1],
+        ['section_key' => 'gallery',   'active' => 1],
+        ['section_key' => 'documents', 'active' => 1],
+        ['section_key' => 'blog',      'active' => 1],
+    ];
+}
+
 $pageTitle = lang('home.hero_title') . ' | Solicitador';
 require_once __DIR__ . '/includes/header.php';
+
+foreach ($homepageSections as $section):
+    if (!$section['active']) continue;
+    $key = $section['section_key'];
+
+    if ($key === 'banners'):
 ?>
 
 <?php if (!empty($banners)): ?>
@@ -77,6 +120,10 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 <?php endif; ?>
 
+<?php
+    elseif ($key === 'services'):
+?>
+
 <section class="services-section" id="services">
     <div class="container">
         <h2 class="section-title"><?= lang('home.services_title') ?></h2>
@@ -99,7 +146,11 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<?php if ($parallaxImage): ?>
+<?php
+    elseif ($key === 'parallax'):
+        if ($parallaxImage):
+?>
+
 <section class="parallax-section" style="background-image: url('<?= sanitize($parallaxImage) ?>');">
     <div class="parallax-overlay">
         <div class="container parallax-content">
@@ -111,9 +162,73 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
-<?php endif; ?>
 
-<?php if (!empty($activeDocuments)): ?>
+<?php
+        endif;
+    elseif ($key === 'portfolio'):
+        if (!empty($portfolioItems)):
+?>
+
+<section class="portfolio-section" id="portfolio">
+    <div class="container">
+        <h2 class="section-title"><?= lang('portfolio.title') ?></h2>
+        <div class="portfolio-grid">
+            <?php foreach ($portfolioItems as $pItem):
+                $pTitle = $lang === 'fr' ? $pItem['title_fr'] : $pItem['title_pt'];
+                $pDesc  = $lang === 'fr' ? $pItem['description_fr'] : $pItem['description_pt'];
+            ?>
+            <div class="portfolio-card">
+                <div class="portfolio-card-image">
+                    <img src="<?= sanitize($pItem['image_url']) ?>" alt="<?= sanitize($pTitle) ?>">
+                </div>
+                <div class="portfolio-card-content">
+                    <h3><?= sanitize($pTitle) ?></h3>
+                    <?php if (!empty($pDesc)): ?>
+                    <p><?= sanitize(mb_substr(strip_tags($pDesc), 0, 120)) ?><?= mb_strlen(strip_tags($pDesc)) > 120 ? '...' : '' ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<?php
+        endif;
+    elseif ($key === 'gallery'):
+        if (!empty($galleryImages)):
+?>
+
+<section class="gallery-section" id="gallery">
+    <div class="container">
+        <h2 class="section-title"><?= lang('gallery.title') ?></h2>
+        <div class="gallery-grid">
+            <?php foreach ($galleryImages as $gImage):
+                $gTitle = $lang === 'fr' ? $gImage['title_fr'] : $gImage['title_pt'];
+                $gDesc  = $lang === 'fr' ? $gImage['description_fr'] : $gImage['description_pt'];
+            ?>
+            <div class="gallery-item">
+                <img src="<?= sanitize($gImage['image_url']) ?>" alt="<?= sanitize($gTitle) ?>">
+                <?php if (!empty($gTitle)): ?>
+                <div class="gallery-item-caption">
+                    <strong><?= sanitize($gTitle) ?></strong>
+                    <?php if (!empty($gDesc)): ?>
+                    <span><?= sanitize(mb_substr(strip_tags($gDesc), 0, 80)) ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<?php
+        endif;
+    elseif ($key === 'documents'):
+        if (!empty($activeDocuments)):
+?>
+
 <section class="documents-section">
     <div class="container">
         <h2 class="section-title"><?= lang('documents.title') ?></h2>
@@ -136,9 +251,13 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
-<?php endif; ?>
 
-<?php if (!empty($latestPosts)): ?>
+<?php
+        endif;
+    elseif ($key === 'blog'):
+        if (!empty($latestPosts)):
+?>
+
 <section class="blog-preview-section">
     <div class="container">
         <h2 class="section-title"><?= lang('blog.latest_news') ?></h2>
@@ -170,6 +289,11 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </section>
-<?php endif; ?>
+
+<?php
+        endif;
+    endif;
+endforeach;
+?>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

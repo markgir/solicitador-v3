@@ -12,6 +12,9 @@ $db->exec("DROP TABLE IF EXISTS menu_items");
 $db->exec("DROP TABLE IF EXISTS blog_posts");
 $db->exec("DROP TABLE IF EXISTS documents");
 $db->exec("DROP TABLE IF EXISTS contact_messages");
+$db->exec("DROP TABLE IF EXISTS portfolio_items");
+$db->exec("DROP TABLE IF EXISTS gallery_images");
+$db->exec("DROP TABLE IF EXISTS homepage_sections");
 
 $db->exec("CREATE TABLE services (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -217,6 +220,49 @@ $menuStmt->execute(['Blog', 'Blog', '/blog.php', 3]);
 $menuStmt->execute(['Consulta', 'Consultation', '/booking.php', 4]);
 $menuStmt->execute(['Contacto', 'Contact', '/contact.php', 5]);
 
+$db->exec("CREATE TABLE portfolio_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_pt VARCHAR(255) NOT NULL,
+    title_fr VARCHAR(255) NOT NULL,
+    description_pt TEXT DEFAULT '',
+    description_fr TEXT DEFAULT '',
+    image_url VARCHAR(500) NOT NULL,
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE gallery_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title_pt VARCHAR(255) DEFAULT '',
+    title_fr VARCHAR(255) DEFAULT '',
+    description_pt TEXT DEFAULT '',
+    description_fr TEXT DEFAULT '',
+    image_url VARCHAR(500) NOT NULL,
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+$db->exec("CREATE TABLE homepage_sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    section_key VARCHAR(50) UNIQUE NOT NULL,
+    label_pt VARCHAR(100) NOT NULL,
+    label_fr VARCHAR(100) NOT NULL,
+    active TINYINT(1) DEFAULT 1,
+    sort_order INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// Seed default homepage sections
+$sectionStmt = $db->prepare("INSERT INTO homepage_sections (section_key, label_pt, label_fr, active, sort_order) VALUES (?, ?, ?, 1, ?)");
+$sectionStmt->execute(['banners', 'Banners / Hero', 'Bannières / Hero', 1]);
+$sectionStmt->execute(['services', 'Serviços', 'Services', 2]);
+$sectionStmt->execute(['parallax', 'Parallax', 'Parallax', 3]);
+$sectionStmt->execute(['portfolio', 'Portfólio', 'Portfolio', 4]);
+$sectionStmt->execute(['gallery', 'Galeria de Imagens', "Galerie d'Images", 5]);
+$sectionStmt->execute(['documents', 'Documentos', 'Documents', 6]);
+$sectionStmt->execute(['blog', 'Blog', 'Blog', 7]);
+
 // Create uploads directory
 $uploadsDir = __DIR__ . '/uploads';
 if (!is_dir($uploadsDir)) {
@@ -226,7 +272,7 @@ if (!is_dir($uploadsDir)) {
 echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Install</title><style>body{font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 24px;background:#f9f8f6;color:#333;}h1{color:#1e3a5f;}a{color:#1e3a5f;}.warn{background:#fff3cd;border:1px solid #ffc107;padding:12px 16px;border-radius:4px;margin-top:1rem;}</style></head><body>';
 echo '<h1>&#x2705; Installation Complete</h1>';
 echo '<ul>';
-echo '<li>MySQL database tables created (services, appointments, admin_users, banners, site_settings, menu_items, blog_posts, documents, contact_messages)</li>';
+echo '<li>MySQL database tables created (services, appointments, admin_users, banners, site_settings, menu_items, blog_posts, documents, contact_messages, portfolio_items, gallery_images, homepage_sections)</li>';
 echo '<li>8 services inserted (PT + FR)</li>';
 echo '<li>Default menu items created</li>';
 echo '<li>Admin user created: <strong>admin</strong> / <strong>admin123</strong></li>';

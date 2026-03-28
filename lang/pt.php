@@ -98,6 +98,13 @@ return [
         'title' => 'Documentos para Download',
         'download' => 'Descarregar',
     ],
+    'portfolio' => [
+        'title' => 'Portfólio',
+        'view' => 'Ver Detalhes',
+    ],
+    'gallery' => [
+        'title' => 'Galeria de Imagens',
+    ],
     'contact' => [
         'title' => 'Contacte-nos',
         'subtitle' => 'Tem uma questão ou precisa de enviar documentos? Preencha o formulário abaixo e entraremos em contacto consigo brevemente.',

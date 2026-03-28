@@ -65,7 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $documentFilename,
                 ]);
 
-                log_email($formData['email'], 'Mensagem de Contacto - ' . $formData['subject'], 'Mensagem recebida de: ' . $formData['name']);
+                $emailSubject = ($lang === 'fr' ? 'Message de Contact - ' : 'Mensagem de Contacto - ') . $formData['subject'];
+                $emailBody = ($lang === 'fr' ? 'Message reçue de : ' : 'Mensagem recebida de: ') . $formData['name'];
+                log_email($formData['email'], $emailSubject, $emailBody);
 
                 $success = true;
                 $formData = ['name' => '', 'email' => '', 'phone' => '', 'subject' => '', 'message' => ''];

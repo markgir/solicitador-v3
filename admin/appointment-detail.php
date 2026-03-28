@@ -57,18 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="admin-body">
 <div class="admin-layout">
-    <aside class="admin-sidebar">
-        <div class="sidebar-logo">Solicitador</div>
-        <nav class="sidebar-nav">
-            <a href="/admin/index.php" class="sidebar-link">&#x1F4CA; Painel</a>
-            <a href="/admin/appointments.php" class="sidebar-link active">&#x1F4C5; Consultas</a>
-            <a href="/admin/services.php" class="sidebar-link">&#x1F4CB; Serviços</a>
-        </nav>
-        <div class="sidebar-footer">
-            <span><?= sanitize($_SESSION['admin_username'] ?? '') ?></span>
-            <a href="/admin/logout.php" class="sidebar-link">&#x1F6AA; Sair</a>
-        </div>
-    </aside>
+    <?php include __DIR__ . '/includes/sidebar.php'; ?>
     <main class="admin-main">
         <header class="admin-header">
             <a href="/admin/appointments.php" class="back-link">&larr; Consultas</a>

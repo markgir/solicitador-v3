@@ -1,10 +1,16 @@
 <?php
 $currentLang = get_language();
+$footerDb = get_db();
+$footerLogo = get_setting($footerDb, 'site_logo');
 ?>
 <footer class="footer" id="contact">
     <div class="container footer-grid">
         <div class="footer-brand">
-            <h3 class="footer-logo">Solicitador</h3>
+            <?php if ($footerLogo): ?>
+                <img src="<?= sanitize($footerLogo) ?>" alt="Solicitador" class="footer-logo-img">
+            <?php else: ?>
+                <h3 class="footer-logo">Solicitador</h3>
+            <?php endif; ?>
             <p><?= lang('footer.tagline') ?></p>
         </div>
         <div class="footer-contact">

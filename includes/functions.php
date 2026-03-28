@@ -117,3 +117,65 @@ function log_email(string $to, string $subject, string $body): void {
     $entry = '[' . date('Y-m-d H:i:s') . '] TO: ' . $to . ' | SUBJECT: ' . $subject . "\n" . $body . "\n---\n";
     file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
 }
+
+function upload_image(array $file, string $subdir = ''): ?string {
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    $maxSize = 5 * 1024 * 1024; // 5MB
+
+    if ($file['error'] !== UPLOAD_ERR_OK || $file['size'] === 0) {
+        return null;
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']);
+    if (!in_array($mimeType, $allowedTypes, true)) {
+        return null;
+    }
+
+    if ($file['size'] > $maxSize) {
+        return null;
+    }
+
+    $ext = match ($mimeType) {
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/gif'  => 'gif',
+        'image/webp' => 'webp',
+        default      => 'jpg',
+    };
+
+    $uploadsDir = __DIR__ . '/../uploads';
+    if ($subdir) {
+        $uploadsDir .= '/' . $subdir;
+    }
+    if (!is_dir($uploadsDir)) {
+        mkdir($uploadsDir, 0755, true);
+    }
+
+    $filename = bin2hex(random_bytes(12)) . '.' . $ext;
+    $destPath = $uploadsDir . '/' . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        return null;
+    }
+
+    $relativePath = '/uploads' . ($subdir ? '/' . $subdir : '') . '/' . $filename;
+    return $relativePath;
+}
+
+function get_setting(PDO $db, string $key): string {
+    $stmt = $db->prepare("SELECT setting_value FROM site_settings WHERE setting_key = ?");
+    $stmt->execute([$key]);
+    $row = $stmt->fetch();
+    return $row ? ($row['setting_value'] ?? '') : '';
+}
+
+function set_setting(PDO $db, string $key, string $value): void {
+    $existing = $db->prepare("SELECT id FROM site_settings WHERE setting_key = ?");
+    $existing->execute([$key]);
+    if ($existing->fetch()) {
+        $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?")->execute([$value, $key]);
+    } else {
+        $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)")->execute([$key, $value]);
+    }
+}

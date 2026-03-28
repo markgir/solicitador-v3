@@ -71,8 +71,83 @@ INSERT INTO `services` (`slug`, `title_pt`, `title_fr`, `description_pt`, `descr
 ('emigrantes', 'Serviços para Emigrantes', 'Services aux Émigrés', 'Especializados no apoio a emigrantes portugueses e lusodescendentes residentes em França, oferecemos um conjunto abrangente de serviços adaptados às necessidades específicas desta comunidade. Desde a manutenção de documentação portuguesa atualizada, como o cartão de cidadão e passaporte, até à gestão de bens imóveis em Portugal, passando pelo apoio em processos de regresso ao país. Ajudamos igualmente na navegação entre os sistemas legais português e francês, facilitando a vida transnacional dos nossos clientes. Compreendemos os desafios únicos enfrentados pelos emigrantes e estamos aqui para simplificar os aspectos legais e administrativos da vida entre dois países.', 'Spécialisés dans le soutien aux émigrés portugais et aux Luso-descendants résidant en France, nous offrons un ensemble complet de services adaptés aux besoins spécifiques de cette communauté. De la maintenance de la documentation portugaise à jour, comme la carte d''identité et le passeport, à la gestion de biens immobiliers au Portugal, en passant par le soutien dans les processus de retour au pays. Nous aidons également à naviguer entre les systèmes juridiques portugais et français, facilitant la vie transnationale de nos clients. Nous comprenons les défis uniques auxquels font face les émigrés et sommes là pour simplifier les aspects juridiques et administratifs de la vie entre deux pays.', '', 1, 8);
 
 -- -----------------------------------------------------------
+-- Table: banners
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `banners`;
+CREATE TABLE `banners` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title_pt` VARCHAR(255) DEFAULT '',
+    `title_fr` VARCHAR(255) DEFAULT '',
+    `image_url` VARCHAR(500) NOT NULL,
+    `link` VARCHAR(500) DEFAULT '',
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: site_settings
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `site_settings`;
+CREATE TABLE `site_settings` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `setting_key` VARCHAR(100) UNIQUE NOT NULL,
+    `setting_value` TEXT DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: menu_items
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `menu_items`;
+CREATE TABLE `menu_items` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title_pt` VARCHAR(255) NOT NULL,
+    `title_fr` VARCHAR(255) NOT NULL,
+    `url` VARCHAR(500) NOT NULL,
+    `target` VARCHAR(10) DEFAULT '_self',
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: blog_posts
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `blog_posts`;
+CREATE TABLE `blog_posts` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `slug` VARCHAR(255) UNIQUE NOT NULL,
+    `title_pt` VARCHAR(255) NOT NULL,
+    `title_fr` VARCHAR(255) NOT NULL,
+    `excerpt_pt` TEXT DEFAULT '',
+    `excerpt_fr` TEXT DEFAULT '',
+    `content_pt` TEXT NOT NULL,
+    `content_fr` TEXT NOT NULL,
+    `image_url` VARCHAR(500) DEFAULT '',
+    `published` TINYINT(1) DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
 -- Seed data: default admin user (admin / admin123)
 -- Change the password after first login!
 -- -----------------------------------------------------------
 INSERT INTO `admin_users` (`username`, `password_hash`) VALUES
 ('admin', '$2y$10$tO3N5bHv1OT60nz6HMnUAunkVBvXTsxQI6pWJ1XTCqO8N741CSF.e');
+
+-- -----------------------------------------------------------
+-- Seed data: default site settings
+-- -----------------------------------------------------------
+INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
+('site_logo', ''),
+('parallax_image', '');
+
+-- -----------------------------------------------------------
+-- Seed data: default menu items
+-- -----------------------------------------------------------
+INSERT INTO `menu_items` (`title_pt`, `title_fr`, `url`, `target`, `active`, `sort_order`) VALUES
+('Início', 'Accueil', '/index.php', '_self', 1, 1),
+('Serviços', 'Services', '/index.php#services', '_self', 1, 2),
+('Blog', 'Blog', '/blog.php', '_self', 1, 3),
+('Consulta', 'Consultation', '/booking.php', '_self', 1, 4),
+('Contacto', 'Contact', '/index.php#contact', '_self', 1, 5);

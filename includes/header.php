@@ -24,6 +24,25 @@ $menuItems = $menuStmt->fetchAll();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
+<?php
+$colorMap = [
+    'color_primary'      => '--navy',
+    'color_primary_dark'  => '--navy-dark',
+    'color_accent'       => '--gold',
+    'color_accent_dark'  => '--gold-dark',
+    'color_bg'           => '--bg',
+    'color_text'         => '--text',
+];
+$colorOverrides = [];
+foreach ($colorMap as $settingKey => $cssVar) {
+    $val = get_setting($headerDb, $settingKey);
+    if ($val !== '' && is_valid_hex_color($val)) {
+        $colorOverrides[] = $cssVar . ':' . $val;
+    }
+}
+if ($colorOverrides): ?>
+    <style>:root{<?= implode(';', $colorOverrides) ?>}</style>
+<?php endif; ?>
 </head>
 <body>
 <nav class="navbar">

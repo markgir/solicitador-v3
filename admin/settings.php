@@ -53,6 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verify_csrf($_POST['csrf_token'] ??
         $success = 'Redes sociais atualizadas com sucesso.';
     }
 
+    // Handle site colors
+    $colorKeys = ['color_primary', 'color_primary_dark', 'color_accent', 'color_accent_dark', 'color_bg', 'color_text'];
+    if (isset($_POST['save_colors'])) {
+        foreach ($colorKeys as $ck) {
+            $val = trim($_POST[$ck] ?? '');
+            if ($val === '' || is_valid_hex_color($val)) {
+                set_setting($db, $ck, $val);
+            } else {
+                $errors[] = 'Cor inválida para ' . sanitize($ck) . '.';
+            }
+        }
+        if (empty($errors)) {
+            $success = 'Cores atualizadas com sucesso.';
+        }
+    }
+
+    // Handle reset colors
+    if (isset($_POST['reset_colors'])) {
+        foreach ($colorKeys as $ck) {
+            set_setting($db, $ck, '');
+        }
+        $success = 'Cores restauradas para os valores originais.';
+    }
+
     if (empty($errors) && empty($success)) {
         $success = 'Definições guardadas.';
     }
@@ -65,6 +89,12 @@ $socialInstagram = get_setting($db, 'social_instagram');
 $socialLinkedin  = get_setting($db, 'social_linkedin');
 $socialTwitter   = get_setting($db, 'social_twitter');
 $socialYoutube   = get_setting($db, 'social_youtube');
+$colorPrimary    = get_setting($db, 'color_primary');
+$colorPrimaryDark = get_setting($db, 'color_primary_dark');
+$colorAccent     = get_setting($db, 'color_accent');
+$colorAccentDark = get_setting($db, 'color_accent_dark');
+$colorBg         = get_setting($db, 'color_bg');
+$colorText       = get_setting($db, 'color_text');
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -174,6 +204,65 @@ $socialYoutube   = get_setting($db, 'social_youtube');
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-gold">Guardar Redes Sociais</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-card">
+            <h2>Cores do Site</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">Personalize as cores do website. Deixe em branco para usar as cores originais.</p>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+                <input type="hidden" name="save_colors" value="1">
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+                    <div class="form-group">
+                        <label for="color_primary">Cor Primária (navbar, rodapé)</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_primary_picker" value="<?= $colorPrimary ?: '#1e3a5f' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_primary').value=this.value">
+                            <input type="text" id="color_primary" name="color_primary" value="<?= sanitize($colorPrimary) ?>" placeholder="#1e3a5f" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_primary_picker').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color_primary_dark">Cor Primária Escura (hover)</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_primary_dark_picker" value="<?= $colorPrimaryDark ?: '#162d4a' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_primary_dark').value=this.value">
+                            <input type="text" id="color_primary_dark" name="color_primary_dark" value="<?= sanitize($colorPrimaryDark) ?>" placeholder="#162d4a" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_primary_dark_picker').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color_accent">Cor de Destaque (botões, destaques)</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_accent_picker" value="<?= $colorAccent ?: '#c8a96e' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_accent').value=this.value">
+                            <input type="text" id="color_accent" name="color_accent" value="<?= sanitize($colorAccent) ?>" placeholder="#c8a96e" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_accent_picker').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color_accent_dark">Cor de Destaque Escura (hover)</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_accent_dark_picker" value="<?= $colorAccentDark ?: '#b8924a' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_accent_dark').value=this.value">
+                            <input type="text" id="color_accent_dark" name="color_accent_dark" value="<?= sanitize($colorAccentDark) ?>" placeholder="#b8924a" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_accent_dark_picker').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color_bg">Cor de Fundo</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_bg_picker" value="<?= $colorBg ?: '#f9f8f6' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_bg').value=this.value">
+                            <input type="text" id="color_bg" name="color_bg" value="<?= sanitize($colorBg) ?>" placeholder="#f9f8f6" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_bg_picker').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color_text">Cor do Texto</label>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <input type="color" id="color_text_picker" value="<?= $colorText ?: '#333333' ?>" style="width:48px;height:38px;padding:2px;border:1px solid var(--border);border-radius:4px;cursor:pointer;" oninput="document.getElementById('color_text').value=this.value">
+                            <input type="text" id="color_text" name="color_text" value="<?= sanitize($colorText) ?>" placeholder="#333333" maxlength="7" pattern="^#[0-9A-Fa-f]{6}$" style="flex:1;" oninput="if(this.value.match(/^#[0-9A-Fa-f]{6}$/))document.getElementById('color_text_picker').value=this.value">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="display:flex;gap:0.5rem;align-items:center;">
+                    <button type="submit" class="btn btn-gold">Guardar Cores</button>
+                    <button type="submit" name="reset_colors" value="1" class="btn btn-outline" onclick="return confirm('Tem a certeza que deseja restaurar as cores originais?')">Restaurar Cores Originais</button>
                 </div>
             </form>
         </div>

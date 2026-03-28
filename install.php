@@ -202,6 +202,12 @@ $db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('socia
 $db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('social_linkedin', '')");
 $db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('social_twitter', '')");
 $db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('social_youtube', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_primary', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_primary_dark', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_accent', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_accent_dark', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_bg', '')");
+$db->exec("INSERT INTO site_settings (setting_key, setting_value) VALUES ('color_text', '')");
 
 // Seed default menu items
 $menuStmt = $db->prepare("INSERT INTO menu_items (title_pt, title_fr, url, target, active, sort_order) VALUES (?, ?, ?, '_self', 1, ?)");

@@ -252,3 +252,7 @@ function upload_document(array $file, string $subdir = 'documents'): ?array {
         'original_filename' => basename($file['name']),
     ];
 }
+
+function is_valid_hex_color(string $color): bool {
+    return (bool) preg_match('/^#[0-9A-Fa-f]{6}$/', $color);
+}

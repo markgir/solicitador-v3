@@ -180,7 +180,13 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('social_instagram', ''),
 ('social_linkedin', ''),
 ('social_twitter', ''),
-('social_youtube', '');
+('social_youtube', ''),
+('color_primary', ''),
+('color_primary_dark', ''),
+('color_accent', ''),
+('color_accent_dark', ''),
+('color_bg', ''),
+('color_text', '');
 
 -- -----------------------------------------------------------
 -- Seed data: default menu items

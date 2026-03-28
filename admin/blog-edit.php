@@ -99,6 +99,7 @@ $pageAction = $isEdit ? 'Editar Artigo' : 'Novo Artigo';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="admin-body">
 <div class="admin-layout">
@@ -177,5 +178,19 @@ $pageAction = $isEdit ? 'Editar Artigo' : 'Novo Artigo';
         </div>
     </main>
 </div>
+<script>
+tinymce.init({
+    selector: '#content_pt, #content_fr',
+    height: 400,
+    language: 'pt_PT',
+    plugins: 'link image media table lists code wordcount fullscreen',
+    toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | table | code fullscreen',
+    menubar: 'file edit view insert format tools table',
+    branding: false,
+    promotion: false,
+    relative_urls: false,
+    remove_script_host: true
+});
+</script>
 </body>
 </html>

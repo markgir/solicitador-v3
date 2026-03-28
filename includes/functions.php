@@ -179,3 +179,10 @@ function set_setting(PDO $db, string $key, string $value): void {
         $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?)")->execute([$key, $value]);
     }
 }
+
+function render_content(string $content): string {
+    if (preg_match('/<(p|div|h[1-6]|ul|ol|li|table|br|img|figure|blockquote|pre)\b/i', $content)) {
+        return $content;
+    }
+    return nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'));
+}

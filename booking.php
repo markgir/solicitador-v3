@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($formData['service_slug'])) $errors['service_slug'] = lang('errors.required_field');
         if (empty($formData['preferred_date'])) {
             $errors['preferred_date'] = lang('errors.required_field');
-        } elseif (strtotime($formData['preferred_date']) < strtotime('today')) {
+        } elseif (strtotime($formData['preferred_date']) < mktime(0, 0, 0, (int)date('m'), (int)date('d'), (int)date('Y'))) {
             $errors['preferred_date'] = lang('errors.past_date');
         }
         if (empty($formData['preferred_time'])) $errors['preferred_time'] = lang('errors.required_field');

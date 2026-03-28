@@ -7,6 +7,7 @@ $db = get_db();
 $id     = (int)($_GET['id'] ?? 0);
 $image  = null;
 $isEdit = false;
+$defaultGroupId = (int)($_GET['group_id'] ?? 0);
 
 if ($id) {
     $stmt = $db->prepare("SELECT * FROM gallery_images WHERE id = ?");
@@ -15,12 +16,20 @@ if ($id) {
     if ($image) $isEdit = true;
 }
 
+// Fetch groups for dropdown
+try {
+    $allGroups = $db->query("SELECT * FROM gallery_groups ORDER BY sort_order ASC, name_pt ASC")->fetchAll();
+} catch (PDOException $e) {
+    $allGroups = [];
+}
+
 $errors   = [];
 $formData = [
     'title_pt'       => $image['title_pt']       ?? '',
     'title_fr'       => $image['title_fr']       ?? '',
     'description_pt' => $image['description_pt'] ?? '',
     'description_fr' => $image['description_fr'] ?? '',
+    'group_id'       => $image['group_id']       ?? $defaultGroupId,
     'sort_order'     => $image['sort_order']     ?? 0,
     'active'         => $image['active']         ?? 1,
 ];
@@ -33,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $formData['title_fr']       = trim($_POST['title_fr']       ?? '');
         $formData['description_pt'] = trim($_POST['description_pt'] ?? '');
         $formData['description_fr'] = trim($_POST['description_fr'] ?? '');
+        $formData['group_id']       = (int)($_POST['group_id']     ?? 0);
         $formData['sort_order']     = (int)($_POST['sort_order']    ?? 0);
         $formData['active']         = isset($_POST['active']) ? 1 : 0;
 
@@ -53,19 +63,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             try {
                 if ($isEdit) {
-                    $db->prepare("UPDATE gallery_images SET title_pt=?, title_fr=?, description_pt=?, description_fr=?, image_url=?, sort_order=?, active=? WHERE id=?")->execute([
+                    $db->prepare("UPDATE gallery_images SET title_pt=?, title_fr=?, description_pt=?, description_fr=?, image_url=?, group_id=?, sort_order=?, active=? WHERE id=?")->execute([
                         $formData['title_pt'], $formData['title_fr'],
                         $formData['description_pt'], $formData['description_fr'],
-                        $imageUrl, $formData['sort_order'], $formData['active'], $id
+                        $imageUrl, $formData['group_id'], $formData['sort_order'], $formData['active'], $id
                     ]);
                 } else {
-                    $db->prepare("INSERT INTO gallery_images (title_pt, title_fr, description_pt, description_fr, image_url, sort_order, active) VALUES (?,?,?,?,?,?,?)")->execute([
+                    $db->prepare("INSERT INTO gallery_images (title_pt, title_fr, description_pt, description_fr, image_url, group_id, sort_order, active) VALUES (?,?,?,?,?,?,?,?)")->execute([
                         $formData['title_pt'], $formData['title_fr'],
                         $formData['description_pt'], $formData['description_fr'],
-                        $imageUrl, $formData['sort_order'], $formData['active']
+                        $imageUrl, $formData['group_id'], $formData['sort_order'], $formData['active']
                     ]);
                 }
-                redirect('/admin/gallery.php');
+                $redirectUrl = '/admin/gallery.php';
+                if ($formData['group_id']) {
+                    $redirectUrl .= '?group_id=' . $formData['group_id'];
+                }
+                redirect($redirectUrl);
             } catch (Exception $e) {
                 $errors[] = 'Erro ao guardar: ' . $e->getMessage();
             }
@@ -90,7 +104,7 @@ $pageAction = $isEdit ? 'Editar Imagem' : 'Nova Imagem';
     <?php include __DIR__ . '/includes/sidebar.php'; ?>
     <main class="admin-main">
         <header class="admin-header">
-            <a href="/admin/gallery.php" class="back-link">&larr; Galeria</a>
+            <a href="/admin/gallery.php<?= $formData['group_id'] ? '?group_id=' . (int)$formData['group_id'] : '' ?>" class="back-link">&larr; Galeria</a>
             <h1><?= sanitize($pageAction) ?></h1>
         </header>
 
@@ -112,6 +126,15 @@ $pageAction = $isEdit ? 'Editar Imagem' : 'Nova Imagem';
                         <?php endif; ?>
                         <input type="file" id="image" name="image" accept="image/*">
                         <small>Formatos: JPG, PNG, GIF, WEBP. Máx: 5MB. <?= $isEdit ? 'Deixe vazio para manter a imagem atual.' : '' ?></small>
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="group_id">Grupo</label>
+                        <select id="group_id" name="group_id">
+                            <option value="0">-- Sem Grupo --</option>
+                            <?php foreach ($allGroups as $grp): ?>
+                            <option value="<?= (int)$grp['id'] ?>" <?= (int)$formData['group_id'] === (int)$grp['id'] ? 'selected' : '' ?>><?= sanitize($grp['name_pt']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="title_pt">Título (PT)</label>

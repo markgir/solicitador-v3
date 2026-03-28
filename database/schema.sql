@@ -167,11 +167,54 @@ CREATE TABLE `portfolio_items` (
 DROP TABLE IF EXISTS `gallery_images`;
 CREATE TABLE `gallery_images` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `group_id` INT DEFAULT NULL,
     `title_pt` VARCHAR(255) DEFAULT '',
     `title_fr` VARCHAR(255) DEFAULT '',
     `description_pt` TEXT DEFAULT '',
     `description_fr` TEXT DEFAULT '',
     `image_url` VARCHAR(500) NOT NULL,
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: gallery_groups
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `gallery_groups`;
+CREATE TABLE `gallery_groups` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name_pt` VARCHAR(255) NOT NULL,
+    `name_fr` VARCHAR(255) DEFAULT '',
+    `cover_image_url` VARCHAR(500) DEFAULT '',
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: about_images
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `about_images`;
+CREATE TABLE `about_images` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `image_url` VARCHAR(500) NOT NULL,
+    `caption_pt` VARCHAR(255) DEFAULT '',
+    `caption_fr` VARCHAR(255) DEFAULT '',
+    `active` TINYINT(1) DEFAULT 1,
+    `sort_order` INT DEFAULT 0,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -----------------------------------------------------------
+-- Table: about_partners
+-- -----------------------------------------------------------
+DROP TABLE IF EXISTS `about_partners`;
+CREATE TABLE `about_partners` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL,
+    `logo_url` VARCHAR(500) DEFAULT '',
+    `website_url` VARCHAR(500) DEFAULT '',
     `active` TINYINT(1) DEFAULT 1,
     `sort_order` INT DEFAULT 0,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -231,17 +274,25 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('color_accent', ''),
 ('color_accent_dark', ''),
 ('color_bg', ''),
-('color_text', '');
+('color_text', ''),
+('portfolio_active', '1'),
+('gallery_active', '1'),
+('about_active', '1'),
+('about_text_pt', ''),
+('about_text_fr', '');
 
 -- -----------------------------------------------------------
 -- Seed data: default menu items
 -- -----------------------------------------------------------
 INSERT INTO `menu_items` (`title_pt`, `title_fr`, `url`, `target`, `active`, `sort_order`) VALUES
 ('Início', 'Accueil', '/index.php', '_self', 1, 1),
-('Serviços', 'Services', '/index.php#services', '_self', 1, 2),
-('Blog', 'Blog', '/blog.php', '_self', 1, 3),
-('Consulta', 'Consultation', '/booking.php', '_self', 1, 4),
-('Contacto', 'Contact', '/contact.php', '_self', 1, 5);
+('Quem Somos', 'Qui Sommes-Nous', '/about.php', '_self', 1, 2),
+('Serviços', 'Services', '/index.php#services', '_self', 1, 3),
+('Portfólio', 'Portfolio', '/portfolio.php', '_self', 1, 4),
+('Galeria', 'Galerie', '/gallery.php', '_self', 1, 5),
+('Blog', 'Blog', '/blog.php', '_self', 1, 6),
+('Consulta', 'Consultation', '/booking.php', '_self', 1, 7),
+('Contacto', 'Contact', '/contact.php', '_self', 1, 8);
 
 -- -----------------------------------------------------------
 -- Seed data: default homepage sections (order + visibility)
@@ -250,7 +301,5 @@ INSERT INTO `homepage_sections` (`section_key`, `label_pt`, `label_fr`, `active`
 ('banners', 'Banners / Hero', 'Bannières / Hero', 1, 1),
 ('services', 'Serviços', 'Services', 1, 2),
 ('parallax', 'Parallax', 'Parallax', 1, 3),
-('portfolio', 'Portfólio', 'Portfolio', 1, 4),
-('gallery', 'Galeria de Imagens', 'Galerie d''Images', 1, 5),
-('documents', 'Documentos', 'Documents', 1, 6),
-('blog', 'Blog', 'Blog', 1, 7);
+('documents', 'Documentos', 'Documents', 1, 4),
+('blog', 'Blog', 'Blog', 1, 5);

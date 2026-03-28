@@ -101,9 +101,20 @@ return [
     'portfolio' => [
         'title' => 'Portfolio',
         'view' => 'Voir Détails',
+        'no_items' => 'Aucun élément dans le portfolio pour le moment.',
     ],
     'gallery' => [
         'title' => 'Galerie d\'Images',
+        'back' => 'Retour à la Galerie',
+        'images' => 'images',
+        'no_groups' => 'Aucun album dans la galerie pour le moment.',
+        'no_images' => 'Aucune image dans cet album.',
+        'group_not_found' => 'Album non trouvé.',
+    ],
+    'about' => [
+        'title' => 'Qui Sommes-Nous',
+        'images_title' => 'Images',
+        'partners_title' => 'Partenaires',
     ],
     'contact' => [
         'title' => 'Contactez-nous',

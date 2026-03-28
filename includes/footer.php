@@ -7,6 +7,15 @@ $footerSocialInstagram = get_setting($footerDb, 'social_instagram');
 $footerSocialLinkedin  = get_setting($footerDb, 'social_linkedin');
 $footerSocialTwitter   = get_setting($footerDb, 'social_twitter');
 $footerSocialYoutube   = get_setting($footerDb, 'social_youtube');
+// Only allow http/https URLs for social links
+$validateUrl = function(string $url): string {
+    return (filter_var($url, FILTER_VALIDATE_URL) && preg_match('#^https?://#i', $url)) ? $url : '';
+};
+$footerSocialFacebook  = $validateUrl($footerSocialFacebook);
+$footerSocialInstagram = $validateUrl($footerSocialInstagram);
+$footerSocialLinkedin  = $validateUrl($footerSocialLinkedin);
+$footerSocialTwitter   = $validateUrl($footerSocialTwitter);
+$footerSocialYoutube   = $validateUrl($footerSocialYoutube);
 $hasAnySocial = $footerSocialFacebook || $footerSocialInstagram || $footerSocialLinkedin || $footerSocialTwitter || $footerSocialYoutube;
 ?>
 <footer class="footer" id="contact">

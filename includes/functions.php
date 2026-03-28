@@ -182,7 +182,8 @@ function set_setting(PDO $db, string $key, string $value): void {
 
 function render_content(string $content): string {
     if (preg_match('/<(p|div|h[1-6]|ul|ol|li|table|br|img|figure|blockquote|pre)\b/i', $content)) {
-        return $content;
+        $allowed = '<p><br><strong><b><em><i><u><s><a><ul><ol><li><h1><h2><h3><h4><h5><h6><blockquote><pre><code><hr><table><thead><tbody><tr><th><td><img><figure><figcaption><video><source><iframe><div><span><sub><sup>';
+        return strip_tags($content, $allowed);
     }
     return nl2br(htmlspecialchars($content, ENT_QUOTES, 'UTF-8'));
 }

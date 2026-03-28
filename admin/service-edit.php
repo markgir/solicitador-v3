@@ -79,6 +79,7 @@ $pageAction = $isEdit ? 'Editar Serviço' : 'Novo Serviço';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Replace 'no-api-key' with your TinyMCE API key from https://www.tiny.cloud/ for production use -->
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 <body class="admin-body">

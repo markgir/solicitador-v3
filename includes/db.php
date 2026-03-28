@@ -7,7 +7,11 @@ function get_db(): PDO {
     $cfg = require $configFile;
 
     $dsn = 'mysql:host=' . $cfg['db_host'] . ';dbname=' . $cfg['db_name'] . ';charset=' . ($cfg['db_charset'] ?? 'utf8mb4');
-    $pdo = new PDO($dsn, $cfg['db_user'], $cfg['db_pass']);
+    try {
+        $pdo = new PDO($dsn, $cfg['db_user'], $cfg['db_pass']);
+    } catch (PDOException $e) {
+        die('Erro ao ligar à base de dados. Verifique as credenciais em config.php.');
+    }
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $pdo;
